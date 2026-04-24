@@ -6,7 +6,8 @@
 
 @theme {
 	--font-poppins: "Poppins", sans-serif;
-	--color-primary: #0070f3;
+	--color-project_primary: oklch(57.7% 0.245 27.325);
+	--color-project_primary-foreground: oklch(70.4% 0.191 22.216);
 }
 
 @theme inline {
@@ -122,13 +123,19 @@
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+	* {
+		@apply border-border outline-ring/50;
 	}
-  body {
-    @apply bg-background text-foreground;
+
+	body {
+		@apply bg-background text-foreground;
 	}
-  html {
-    @apply font-sans;
+
+	html {
+		@apply font-sans;
+	}
+
+	.hoverEffect {
+		@apply transition-all duration-500 ease-in-out;
 	}
 }

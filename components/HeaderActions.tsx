@@ -30,20 +30,39 @@ export default function HeaderActions() {
 
     return (
         <Container className="flex items-center justify-end gap-6 w-full">
-            <Link href="/search" className="transition-transform duration-100 active:scale-90">
-                <Search className="w-5 h-5 text-project_primary hover:text-project_primary-foreground hover:scale-120 hoverEffect transition-transform duration-100 active:scale-90" />
-            </Link>
-            <Link href="/cart" className="transition-transform duration-100 active:scale-90">
-                <ShoppingBag className="w-5 h-5 text-project_primary hover:text-project_primary-foreground hover:scale-120 hoverEffect transition-transform duration-100 active:scale-90" />
-            </Link>
-            <Link href="/notifications" className="transition-transform duration-100">
-                <Bell className="w-5 h-5 text-project_primary hover:text-project_primary-foreground hover:scale-120 hoverEffect transition-transform duration-100 active:scale-90" />
-            </Link>
-            <div ref={menuRef} className="relative">
+            <div className="relative group">
+                <Link href="/search" className="transition-transform duration-100 active:scale-90">
+                    <Search className="w-5 h-5 text-project_primary hover:text-project_primary-foreground hover:scale-110 hoverEffect transition-transform duration-100 active:scale-90" />
+                </Link>
+                <span className="whitespace-nowrap absolute -bottom-8 left-1/2 -translate-x-1/2 translate-y-1 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 text-xs px-2 py-1 rounded-md bg-black text-white">
+                    Search
+                </span>
+            </div>
+
+            <div className="relative group">
+                <Link href="/cart" className="transition-transform duration-100 active:scale-90">
+                    <ShoppingBag className="w-5 h-5 text-project_primary hover:text-project_primary-foreground hover:scale-110 hoverEffect transition-transform duration-100 active:scale-90" />
+                </Link>
+                <span className="whitespace-nowrap absolute -bottom-8 left-1/2 -translate-x-1/2 translate-y-1 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 text-xs px-2 py-1 rounded-md bg-black text-white">
+                    Cart
+                </span>
+            </div>
+            <div className="relative group">
+                <Link href="/notifications" className="transition-transform duration-100">
+                    <Bell className="w-5 h-5 text-project_primary hover:text-project_primary-foreground hover:scale-110 hoverEffect transition-transform duration-100 active:scale-90" />
+                </Link>
+                <span className="whitespace-nowrap absolute -bottom-8 left-1/2 -translate-x-1/2 translate-y-1 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 text-xs px-2 py-1 rounded-md bg-black text-white">
+                    Notifications
+                </span>
+            </div>
+            <div ref={menuRef} className="relative group">
                 <div className="cursor-pointer transition-transform duration-100 relative" onClick={toggleMenu}>
-                    <User className="w-5 h-5 text-project_primary hover:text-project_primary-foreground hover:scale-120 hoverEffect transition-transform duration-100 active:scale-90" />
+                    <User className="w-5 h-5 text-project_primary hover:text-project_primary-foreground hover:scale-110 hoverEffect transition-transform duration-100 active:scale-90" />
                     {isMenuOpen && <AccountOptions session={session} />}
                 </div>
+                <span className="whitespace-nowrap absolute -bottom-8 left-1/2 -translate-x-1/2 translate-y-1 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 text-xs px-2 py-1 rounded-md bg-black text-white">
+                    Your Account
+                </span>
             </div>
         </Container>
     );

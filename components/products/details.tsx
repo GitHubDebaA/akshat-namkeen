@@ -6,16 +6,80 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Star, ShoppingBag, Heart, Share2, ChevronDown, Check, ArrowLeft } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import { Button } from "../ui/button"
+import { useCart } from "@/store/cart";
 
-import { Product } from "@prisma/client";
+import { Product, ProductProperty } from "@prisma/client";
 import ProductCard from "./card";
 
-export default function ProductDetails({ product }: { product: Product }) {
+type Props = {
+    product: Product;
+    properties: ProductProperty[];
+};
+
+type TextTab = {
+    id: string;
+    label: string;
+    type: "text";
+    content: string;
+};
+
+type PropertiesTab = {
+    id: string;
+    label: string;
+    type: "properties";
+    items: ProductProperty[];
+};
+
+type Tab = TextTab | PropertiesTab;
+
+export default function ProductDetails({ product, properties }: Props) {
     const [selectedImage, setSelectedImage] = useState(0);
     const [quantity, setQuantity] = useState(1);
     const [added, setAdded] = useState(false);
     const [wished, setWished] = useState(false);
     const [openTab, setOpenTab] = useState<string | null>("description");
+    const { addItem } = useCart();
+
+    const handleAddToCart = () => {
+        addItem(product, quantity);
+        setAdded(true);
+        setTimeout(() => setAdded(false), 2000);
+    };
+
+    const sorted = [...properties].sort(
+        (a, b) => (a.order ?? 0) - (b.order ?? 0)
+    );
+
+    const grouped = sorted.reduce((acc, item) => {
+        if (!acc[item.section]) acc[item.section] = [];
+        acc[item.section].push(item);
+        return acc;
+    }, {} as Record<string, ProductProperty[]>);
+
+    const dynamicSections: PropertiesTab[] = Object.entries(grouped).map(
+        ([section, items]) => ({
+            id: section.toLowerCase().replace(/\s+/g, "-"),
+            label: section,
+            type: "properties",
+            items,
+        })
+    );
+    const tabs: Tab[] = [
+        {
+            id: "description",
+            label: "Description",
+            type: "text",
+            content: product.description,
+        },
+        ...dynamicSections,
+        {
+            id: "shipping",
+            label: "Shipping & Returns",
+            type: "text",
+            content:
+                "Free shipping on all orders over INR 499. Returns accepted within 7 days.",
+        },
+    ];
 
     return (
         <div className="min-h-screen">
@@ -31,10 +95,10 @@ export default function ProductDetails({ product }: { product: Product }) {
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-20">
                     {/* Images */}
-                    <div className="flex gap-4">
+                    <div className="flex gap-4 h-[40dvh] md:h-[50dvh] lg:h-[100vh] max-h-[600px]">
                         {/* Thumbnails */}
                         {product.images.length > 0 && (
-                            <div className="flex flex-col gap-3 w-16 flex-shrink-0">
+                            <div className="flex flex-col gap-3 w-16 flex-shrink-0 h-full">
                                 {product.images.map((img, i) => (
                                     <button
                                         key={i}
@@ -48,7 +112,7 @@ export default function ProductDetails({ product }: { product: Product }) {
                         )}
 
                         {/* Main Image */}
-                        <div className="flex-1 relative aspect-square rounded-3xl overflow-hidden bg-brand-100">
+                        <div className="flex-1 relative h-full rounded-3xl overflow-hidden bg-brand-100">
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={selectedImage}
@@ -187,6 +251,7 @@ export default function ProductDetails({ product }: { product: Product }) {
                                 <Button
                                     size="lg"
                                     className="flex-1 gap-2"
+                                    onClick={handleAddToCart}
                                 >
                                     <AnimatePresence mode="wait">
                                         {added ? (
@@ -238,47 +303,53 @@ export default function ProductDetails({ product }: { product: Product }) {
 
                             {/* Accordion */}
                             <div className="border-t border-brand-200 divide-y divide-brand-200">
-                                {[
-                                    { id: "description", label: "Description", content: product.description },
-                                    {
-                                        id: "shipping",
-                                        label: "Shipping & Returns",
-                                        content: "Free shipping on all orders over INR 75. Returns accepted within 10 days of purchase.",
-                                    },
-                                ]
-                                    .filter(Boolean)
-                                    .map((tab: { id: string; label: string; content: string } | false) => {
-                                        if (!tab) return null;
-                                        return (
-                                            <div key={tab.id}>
-                                                <button
-                                                    onClick={() => setOpenTab(openTab === tab.id ? null : tab.id)}
-                                                    className="flex items-center justify-between w-full py-4 text-left"
+                                {tabs.map((tab) => (
+                                    <div key={tab.id}>
+                                        <button
+                                            onClick={() => setOpenTab(openTab === tab.id ? null : tab.id)}
+                                            className="flex items-center justify-between w-full py-4 text-left"
+                                        >
+                                            <span className="text-sm font-medium text-obsidian">{tab.label}</span>
+                                            <ChevronDown
+                                                className={`w-4 h-4 text-obsidian/50 transition-transform ${openTab === tab.id ? "rotate-180" : ""
+                                                    }`}
+                                            />
+                                        </button>
+                                        <AnimatePresence>
+                                            {openTab === tab.id && (
+                                                <motion.div
+                                                    initial={{ height: 0, opacity: 0 }}
+                                                    animate={{ height: "auto", opacity: 1 }}
+                                                    exit={{ height: 0, opacity: 0 }}
+                                                    transition={{ duration: 0.2 }}
+                                                    className="overflow-hidden"
                                                 >
-                                                    <span className="text-sm font-medium text-obsidian">{tab.label}</span>
-                                                    <ChevronDown
-                                                        className={`w-4 h-4 text-obsidian/50 transition-transform ${openTab === tab.id ? "rotate-180" : ""
-                                                            }`}
-                                                    />
-                                                </button>
-                                                <AnimatePresence>
-                                                    {openTab === tab.id && (
-                                                        <motion.div
-                                                            initial={{ height: 0, opacity: 0 }}
-                                                            animate={{ height: "auto", opacity: 1 }}
-                                                            exit={{ height: 0, opacity: 0 }}
-                                                            transition={{ duration: 0.2 }}
-                                                            className="overflow-hidden"
-                                                        >
-                                                            <p className="pb-4 text-sm text-obsidian/60 leading-relaxed">
-                                                                {tab.content}
-                                                            </p>
-                                                        </motion.div>
-                                                    )}
-                                                </AnimatePresence>
-                                            </div>
-                                        );
-                                    })}
+                                                    <div className="pb-4 text-sm text-obsidian/70 space-y-2">
+
+                                                        {/* TEXT CONTENT */}
+                                                        {tab.type === "text" && (
+                                                            <p>{tab.content}</p>
+                                                        )}
+
+                                                        {/* PROPERTY CONTENT */}
+                                                        {tab.type === "properties" &&
+                                                            tab.items.map((item) => (
+                                                                <div key={item.id} className="flex justify-between">
+                                                                    <span className="text-obsidian/50">
+                                                                        {item.label}
+                                                                    </span>
+                                                                    <span className="font-medium text-right">
+                                                                        {item.value}
+                                                                    </span>
+                                                                </div>
+                                                            ))
+                                                        }
+                                                    </div>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
+                                ))}
                             </div>
                         </motion.div>
                     </div>

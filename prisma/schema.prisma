@@ -87,8 +87,26 @@ model Product {
   description String
   dpURL       String
   images      String[]
+  properties  ProductProperty[]
   isActive    Boolean     @default(true)
   updatedAt   DateTime    @updatedAt 
+}
+
+model ProductProperty {
+	id			String		@id @default(cuid())
+	productId	String
+	product		Product		@relation(fields: [productId], references: [id], onDelete: Cascade)
+	
+	section		String		// "Important Information", "Measurements"
+	label		String		// "Ingredients"
+	value		String   	// "Besan, Oil, Spices"
+	
+	valueType	String?  	// "text" | "list" | "html"
+	order     	Int?     	// UI ordering
+
+	createdAt	DateTime	@default(now())
+	
+	@@index([productId])
 }
 
 enum BannerType {

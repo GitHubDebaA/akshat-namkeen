@@ -8,10 +8,14 @@ import { Search, ShoppingBag, Bell, User } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useSession } from "next-auth/react"
 
+import { useCart } from "@/store/cart";
+
 export default function HeaderActions() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
-    const { data: session } = useSession()
+    const { data: session } = useSession();
+    
+    const { openCart } = useCart();
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -28,6 +32,10 @@ export default function HeaderActions() {
         setIsMenuOpen(prev => !prev);
     }
 
+    const HandleOpenCart = () => {
+        openCart();
+    }
+
     return (
         <Container className="flex items-center justify-end gap-6 w-full">
             <div className="relative group">
@@ -40,9 +48,9 @@ export default function HeaderActions() {
             </div>
 
             <div className="relative group">
-                <Link href="/cart" className="transition-transform duration-100 active:scale-90">
+                <div className="cursor-pointer transition-transform duration-100 relative" onClick={HandleOpenCart}>
                     <ShoppingBag className="w-5 h-5 text-project_primary hover:text-project_primary-foreground hover:scale-110 hoverEffect transition-transform duration-100 active:scale-90" />
-                </Link>
+                </div>
                 <span className="whitespace-nowrap absolute -bottom-8 left-1/2 -translate-x-1/2 translate-y-1 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 text-xs px-2 py-1 rounded-md bg-black text-white">
                     Cart
                 </span>

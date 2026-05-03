@@ -6,7 +6,12 @@ export default async function ProductViewPage({ params }: { params: Promise<{ id
     const { id } = await params;
 
     const product = await prisma.product.findUnique({
-        where: { id: id }
+        where: { id: id },
+    });
+
+    const properties = await prisma.productProperty.findMany({
+        where: { productId: id },
+        orderBy: { order: "asc" },
     });
 
     if (!product) {
@@ -14,6 +19,6 @@ export default async function ProductViewPage({ params }: { params: Promise<{ id
     }
 
     return (
-        <ProductDetails product={product} />
+        <ProductDetails product={product} properties={properties} />
     );
 }

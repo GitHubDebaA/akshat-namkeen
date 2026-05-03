@@ -5,9 +5,19 @@ import { motion } from "framer-motion";
 import { Heart, ShoppingBag, Star } from "lucide-react";
 import { Product } from "@prisma/client";
 import { formatPrice } from "@/lib/utils";
+import { useCart } from "@/store/cart";
 
 const ProductCard = ({ product }: { product: Product }) => {
     const [wished, setWished] = useState(false);
+    const [quantity, setQuantity] = useState(1);
+    const [added, setAdded] = useState(false);
+    const { addItem } = useCart();
+
+    const handleAddToCart = () => {
+        addItem(product, quantity);
+        setAdded(true);
+        setTimeout(() => setAdded(false), 2000);
+    };
 
     return (
         <motion.div
@@ -56,7 +66,10 @@ const ProductCard = ({ product }: { product: Product }) => {
                     {/* Floating Add to Cart */}
 
                     <button
-                        onClick={(e) => e.preventDefault()}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            handleAddToCart();
+                        }}
                         className="absolute bottom-3 right-3 w-10 h-10 flex items-center justify-center rounded-full bg-black text-white shadow-lg opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 hover:scale-110"
                     >
                         <ShoppingBag className="w-4 h-4" />

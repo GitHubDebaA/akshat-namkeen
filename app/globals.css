@@ -8,6 +8,8 @@
 	--font-poppins: "Poppins", sans-serif;
 	--color-project_primary: oklch(57.7% 0.245 27.325);
 	--color-project_primary-foreground: oklch(70.4% 0.191 22.216);
+	--color-obsidian: #0a0a0a;
+	--color-ivory: #faf8f4;
 }
 
 @theme inline {

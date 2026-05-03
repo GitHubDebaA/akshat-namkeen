@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import Provider from "../SessionProvider";
+import Cart from "@/components/cart/cart";
 
 export const metadata: Metadata = {
     title: "Akshat Namkeen",
@@ -12,6 +13,7 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
     return (
         <Provider>
             <Header />
+            <Cart />
             {children}
             <Footer />
         </Provider>

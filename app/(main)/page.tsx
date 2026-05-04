@@ -23,7 +23,6 @@ const Home = () => {
 			console.log(data.products.length);
 		};
 
-		console.log('Fetch products');
 		fetchProducts();
 	}, []);
 

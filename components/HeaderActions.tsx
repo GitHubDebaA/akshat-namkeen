@@ -9,6 +9,7 @@ import { useState, useRef, useEffect } from "react";
 import { useSession } from "next-auth/react"
 
 import { useCart } from "@/store/cart";
+import { useAccountOptions } from "@/store/account/options/option";
 
 export default function HeaderActions() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -16,6 +17,7 @@ export default function HeaderActions() {
     const { data: session } = useSession();
     
     const { openCart } = useCart();
+    const { openAccountOptions } = useAccountOptions();
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -63,10 +65,9 @@ export default function HeaderActions() {
                     Notifications
                 </span>
             </div>
-            <div ref={menuRef} className="relative group">
-                <div className="cursor-pointer transition-transform duration-100 relative" onClick={toggleMenu}>
+            <div className="relative group">
+                <div className="cursor-pointer transition-transform duration-100 relative" onClick={openAccountOptions}>
                     <User className="w-5 h-5 text-project_primary hover:text-project_primary-foreground hover:scale-110 hoverEffect transition-transform duration-100 active:scale-90" />
-                    {isMenuOpen && <AccountOptions session={session} />}
                 </div>
                 <span className="whitespace-nowrap absolute -bottom-8 left-1/2 -translate-x-1/2 translate-y-1 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 text-xs px-2 py-1 rounded-md bg-black text-white">
                     Your Account

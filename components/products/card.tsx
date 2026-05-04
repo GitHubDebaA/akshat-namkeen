@@ -41,7 +41,7 @@ const ProductCard = ({ product }: { product: Product }) => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-300" />
 
                     {/* Badge */}
-                    <div className="absolute top-3 left-3 flex items-center justify-center px-3 py-1 rounded-full bg-white/90 backdrop-blur-md text-ivory text-[10px] font-semibold tracking-widest uppercase shadow-sm">
+                    <div className="absolute top-3 left-3 flex items-center justify-center px-3 py-1 rounded-full bg-obsidian/90 backdrop-blur-md text-ivory text-[10px] font-semibold tracking-widest uppercase shadow-sm">
                         Newly Added
                     </div>
 

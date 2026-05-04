@@ -3,6 +3,7 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import Provider from "../SessionProvider";
 import Cart from "@/components/cart/cart";
+import AccountOptions from "@/components/account/options/options";
 
 export const metadata: Metadata = {
     title: "Akshat Namkeen",
@@ -14,6 +15,7 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
         <Provider>
             <Header />
             <Cart />
+            <AccountOptions />
             {children}
             <Footer />
         </Provider>

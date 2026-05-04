@@ -1,16 +1,13 @@
-"use client";
+import { useAccountOptions } from "@/store/account/options/option";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Minus, Plus, ShoppingBag, ArrowRight } from "lucide-react";
+import { X, Minus, Plus, ArrowRight, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useCart } from "@/store/cart";
-import { formatPrice } from "@/lib/utils";
 import { Button } from "../ui/button";
 
-export default function Cart() {
-    const { items, isOpen, closeCart, removeItem, updateQuantity, total } = useCart();
-    const cartTotal = total();
+export default function AccountOptions() {
+    const { isOpen, openAccountOptions, closeAccountOptions, toggleAccountOptions } = useAccountOptions();
 
     return (
         <AnimatePresence>
@@ -21,7 +18,7 @@ export default function Cart() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        onClick={closeCart}
+                        onClick={closeAccountOptions}
                         className="fixed inset-0 bg-obsidian/40 backdrop-blur-sm z-50"
                     />
 
@@ -37,11 +34,10 @@ export default function Cart() {
                         <div className="flex items-center justify-between px-6 py-5 border-b border-brand-200">
                             <div className="flex items-center gap-3">
                                 <ShoppingBag className="w-5 h-5 text-obsidian" />
-                                <h2 className="font-display text-lg font-medium">Your Bag</h2>
-                                <span className="text-sm text-obsidian/50">({items.length})</span>
+                                <h2 className="font-display text-lg font-medium">Account Details</h2>
                             </div>
                             <button
-                                onClick={closeCart}
+                                onClick={closeAccountOptions}
                                 className="p-2 rounded-full hover:bg-brand-100 transition-colors"
                             >
                                 <X className="w-4 h-4" />
@@ -57,14 +53,14 @@ export default function Cart() {
                                         animate={{ opacity: 1 }}
                                         className="flex flex-col items-center justify-center h-64 text-center"
                                     >
-                                        <ShoppingBag className="w-12 h-12 text-brand-300 mb-4" />
-                                        <p className="font-display text-xl text-obsidian/50">Your bag is empty</p>
+                                        <User className="w-12 h-12 text-brand-300 mb-4" />
+                                        <p className="font-display text-xl text-obsidian/50">Your account is empty</p>
                                         <p className="text-sm text-obsidian/40 mt-2">Discover something beautiful</p>
                                         <Button
                                             variant="outline"
                                             size="sm"
                                             className="mt-6"
-                                            onClick={closeCart}
+                                            onClick={closeAccountOptions}
                                         >
                                             Continue Shopping
                                         </Button>

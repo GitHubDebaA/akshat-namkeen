@@ -81,8 +81,8 @@ export default function AccountOptions() {
                                         Use your credentials below and start shopping with us.
                                     </p>
 
-                                    <div className="my-6">
-                                        <p className="text-lg text-gray-600">
+                                    <div className="my-6 space-y-4">
+                                        <p className="text-lg text-gray-600 uppercase">
                                             Sign In
                                         </p>
                                         {/* Email */}
@@ -113,34 +113,36 @@ export default function AccountOptions() {
                                         </div>
                                     </div>
 
-                                    <Link href="/signin">
-                                        <Button className="w-full bg-project_primary hover:bg-project_primary-foreground">
-                                            Sign In
-                                        </Button>
+                                    <Link href="/signin" className="flex items-center justify-center gap-2 text-project_primary">
+                                        <button className="text-md">
+                                            Sign In 
+                                        </button>
                                     </Link>
-
-                                    <div className="flex items-center justify-center gap-1 text-xs">
-                                        <span className="text-gray-500">
-                                            {"Don't have an account?"}
-                                        </span>
-                                        <Link
-                                            href="/signup"
-                                            className="text-project_primary hover:underline"
-                                        >
-                                            Sign Up
-                                        </Link>
-                                    </div>
                                 </div>
                             )}
                         </div>
 
                         {/* Footer */}
                         <div className="px-6 py-5 border-t border-brand-200 space-y-4">
-                            <button
-                                className="w-full py-2 px-4 bg-brand-100 hover:bg-brand-200 text-brand-800 hover:text-brand-900 transition-colors"
-                            >
-                                Sign Out
-                            </button>
+                            {session?.user ? (
+                                <button
+                                    className="w-full py-2 px-4 bg-brand-100 hover:bg-brand-200 text-brand-800 hover:text-brand-900 transition-colors"
+                                >
+                                    Sign Out
+                                </button>
+                            ) : (
+                                <div className="flex items-center justify-center gap-1 text-sm">
+                                    <span className="text-gray-500">
+                                        {"Don't have an account?"}
+                                    </span>
+                                    <Link
+                                        href="/signup"
+                                        className="text-project_primary hover:underline uppercase"
+                                    >
+                                        Sign Up
+                                    </Link>
+                                </div>
+                            )}
                         </div>
                     </motion.div>
                 </>

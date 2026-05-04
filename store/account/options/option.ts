@@ -12,7 +12,7 @@ type AccountOption = {
 
 export const useAccountOptions = create<AccountOption>()(
     persist(
-        (set, get) => ({
+        (set) => ({
             isOpen: true,
 
             openAccountOptions: () => set({ isOpen: true }),

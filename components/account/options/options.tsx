@@ -3,11 +3,12 @@
 import { useAccountOptions } from "@/store/account/options/option";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, User, LogOut } from "lucide-react";
+import { X, User, LogOut, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react"
+import {signOut} from "next-auth/react"
 
 export default function AccountOptions() {
     const { isOpen, closeAccountOptions, handleGoogleSignin, handleCredentialSignIn } = useAccountOptions();
@@ -20,6 +21,13 @@ export default function AccountOptions() {
     const HandleGoogleSignin = () => {
         handleGoogleSignin();
     }
+
+    const options = [
+        { id: "profile", label: "Profile", type: "link", href: "/profile" },
+        { id: "orders", label: "Orders", type: "link", href: "/orders" },
+        { id: "cart", label: "Cart", type: "link", href: "/cart" },
+        { id: "wishlist", label: "Wishlist", type: "link", href: "/wishlist" }
+    ]
 
     return (
         <AnimatePresence>
@@ -60,24 +68,33 @@ export default function AccountOptions() {
                         <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
                             {session?.user ? (
                                 // ✅ Logged-in UI
-                                <div className="flex items-center gap-3">
-                                    <Image
-                                        src={session.user.image || "/default-avatar.png"}
-                                        alt="Avatar"
-                                        width={40}
-                                        height={40}
-                                        className="rounded-full border"
-                                    />
+                                <>
+                                    <div className="relative h-44 w-full flex flex-col items-center justify-center gap-2 overflow-hidden">
+                                        <Image
+                                            src={session.user.image || "/default-avatar.png"}
+                                            alt="Avatar"
+                                            width={90}
+                                            height={90}
+                                            className="relative z-10 rounded-full border-4 border-white shadow-md"
+                                        />
 
-                                    <div className="flex flex-col">
-                                        <span className="text-sm font-medium text-project_primary">
-                                            Hello, {session.user.name}
-                                        </span>
-                                        <span className="text-xs text-project_primary-foreground">
+                                        <div className="relative z-10 text-base font-semibold text-obsidian">
+                                            {session.user.name}
+                                        </div>
+                                        <div className="relative z-10 text-xs text-obsidian/60">
                                             {session.user.email}
-                                        </span>
+                                        </div>
                                     </div>
-                                </div>
+
+                                    <div className="divide-y divide-brand-200">
+                                        {options.map((option) => (
+                                            <Link key={option.id} href={option.href} className="group flex items-center justify-between px-4 py-4 transition-all duration-200 hover:bg-brand-50 active:scale-[0.98]" >
+                                                <span className="text-sm font-medium text-obsidian">{option.label}</span>
+                                                <ChevronRight className="w-4 h-4 text-obsidian/50 transition-transform duration-200 group-hover:translate-x-1" />
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </>
                             ) : (
                                 // Not logged in UI
                                 <div>
@@ -164,9 +181,9 @@ export default function AccountOptions() {
                         <div className="px-6 py-5 border-t border-brand-200 space-y-4">
                             {session?.user ? (
                                 <Button
+                                    onClick={() => signOut()}
                                     className="text-sm w-full py-6 bg-project_primary hover:bg-project_primary-foreground text-white transition-colors cursor-pointer uppercase"
                                 >
-
                                     <LogOut className="w-4 h-4 mr-2" />
                                     Sign Out
                                 </Button>

@@ -141,3 +141,7 @@
 		@apply transition-all duration-500 ease-in-out;
 	}
 }
+
+.menu-item {
+	@apply block px-4 py-3 rounded-md hover:bg-gray-100 transition text-sm;
+}

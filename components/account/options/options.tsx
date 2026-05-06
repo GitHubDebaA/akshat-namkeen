@@ -3,22 +3,22 @@
 import { useAccountOptions } from "@/store/account/options/option";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, User } from "lucide-react";
+import { X, User, LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react"
 
 export default function AccountOptions() {
-    const { isOpen, closeAccountOptions } = useAccountOptions();
+    const { isOpen, closeAccountOptions, handleGoogleSignin, handleCredentialSignIn } = useAccountOptions();
     const { data: session } = useSession();
 
     const HandleCredentialSignIn = () => {
-
+        handleCredentialSignIn('email@example.com', 'password');
     }
 
     const HandleGoogleSignin = () => {
-
+        handleGoogleSignin();
     }
 
     return (
@@ -120,7 +120,7 @@ export default function AccountOptions() {
                                             </div>
                                         </div>
 
-                                        <Button onClick={HandleCredentialSignIn} className="text-md w-full py-6 bg-project_primary hover:bg-project_primary-foreground text-white transition-colors cursor-pointer">
+                                        <Button onClick={HandleCredentialSignIn} className="text-sm w-full py-6 bg-project_primary hover:bg-project_primary-foreground text-white transition-colors cursor-pointer uppercase">
                                             Sign In
                                         </Button>
 
@@ -132,7 +132,7 @@ export default function AccountOptions() {
                                         </div>
 
                                         {/* Social Login */}
-                                        <Button onClick={HandleGoogleSignin} className="text-md w-full py-6 bg-obsidian/70 hover:bg-obsidian text-ivory transition-colors cursor-pointer">
+                                        <Button onClick={HandleGoogleSignin} className="text-sm w-full py-6 bg-obsidian/70 hover:bg-obsidian text-ivory transition-colors cursor-pointer uppercase">
                                             {/* Google Icon */}
                                             <svg width="64px" height="64px" viewBox="-0.5 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000">
                                                 <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
@@ -163,11 +163,13 @@ export default function AccountOptions() {
                         {/* Footer */}
                         <div className="px-6 py-5 border-t border-brand-200 space-y-4">
                             {session?.user ? (
-                                <button
-                                    className="w-full py-2 px-4 bg-brand-100 hover:bg-brand-200 text-brand-800 hover:text-brand-900 transition-colors"
+                                <Button
+                                    className="text-sm w-full py-6 bg-project_primary hover:bg-project_primary-foreground text-white transition-colors cursor-pointer uppercase"
                                 >
+
+                                    <LogOut className="w-4 h-4 mr-2" />
                                     Sign Out
-                                </button>
+                                </Button>
                             ) : (
                                 <div className="flex items-center justify-center gap-1 text-sm">
                                     <span className="text-gray-500">

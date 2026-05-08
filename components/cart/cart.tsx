@@ -12,6 +12,11 @@ export default function Cart() {
     const { items, isOpen, closeCart, removeItem, updateQuantity, total } = useCart();
     const cartTotal = total();
 
+    const handleExplore = () => {
+        window.location.href = "/";
+        closeCart();
+    };
+
     return (
         <AnimatePresence>
             {isOpen && (
@@ -59,14 +64,9 @@ export default function Cart() {
                                     >
                                         <ShoppingBag className="w-12 h-12 text-brand-300 mb-4" />
                                         <p className="font-display text-xl text-obsidian/50">Your bag is empty</p>
-                                        <p className="text-sm text-obsidian/40 mt-2">Discover something beautiful</p>
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            className="mt-6"
-                                            onClick={closeCart}
-                                        >
-                                            Continue Shopping
+                                        <p className="text-sm text-obsidian/40">Discover something beautiful</p>
+                                        <Button className="gap-3 bg-obsidian/70 text-ivory uppercase px-8 py-6 mt-6" onClick={handleExplore}>
+                                            Explore <ArrowRight className="w-4 h-4" />
                                         </Button>
                                     </motion.div>
                                 ) : (
@@ -132,7 +132,7 @@ export default function Cart() {
                         {items.length > 0 && (
                             <div className="px-6 py-5 border-t border-brand-200 space-y-4">
                                 <div className="flex items-center justify-between text-sm">
-                                    <span className="text-obsidian/60">Free shipping on orders over $75</span>
+                                    <span className="text-obsidian/60">Free shipping on orders over {formatPrice(75)}</span>
                                     <span className={cartTotal >= 75 ? "text-green-600 font-medium" : "text-brand-500"}>
                                         {cartTotal >= 75 ? "✓ Unlocked" : `$${75 - cartTotal} away`}
                                     </span>
@@ -156,7 +156,7 @@ export default function Cart() {
                                         <p className="font-display text-2xl font-medium">{formatPrice(cartTotal)}</p>
                                     </div>
                                     <Link href="/checkout" onClick={closeCart}>
-                                        <Button size="lg" className="gap-3">
+                                        <Button size="lg" className="gap-3 bg-obsidian/50 hover:bg-obsidian transition-colors text-ivory uppercase px-8 py-6">
                                             Checkout <ArrowRight className="w-4 h-4" />
                                         </Button>
                                     </Link>

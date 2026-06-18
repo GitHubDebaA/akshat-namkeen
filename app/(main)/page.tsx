@@ -101,7 +101,7 @@ const Home = () => {
 							onClick={() => api?.scrollTo(index)}
 							className={`h-2 w-2 rounded-full transition-all ${current === index
 								? "bg-project_primary w-6"
-								: "bg-gray-300"
+								: "bg-gray-500"
 								}`}
 						/>
 					))}

@@ -74,6 +74,7 @@ const Home = () => {
 			</Carousel>
 
 			<Container className="my-8">
+				<h1 className="font-display text-2xl font-medium text-obsidian mb-4">See whats all Akshat Namkeen have</h1>
 				<ProductList products={products} />
 			</Container>
 		</Container>

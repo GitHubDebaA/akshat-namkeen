@@ -1,17 +1,21 @@
 "use client";
 
 import { useAccountOptions } from "@/store/account/options/option";
+import { useAddressOptions } from "@/store/address/address";
+import { useCart } from "@/store/cart";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, User, LogOut, ChevronRight } from "lucide-react";
+import { X, User, LogOut, ChevronRight, Pencil } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react"
-import {signOut} from "next-auth/react"
+import { signOut } from "next-auth/react"
 
 export default function AccountOptions() {
     const { isOpen, closeAccountOptions, handleGoogleSignin, handleCredentialSignIn } = useAccountOptions();
+    const { openAddressOptions } = useAddressOptions();
+    const { openCart } = useCart();
     const { data: session } = useSession();
 
     const HandleCredentialSignIn = () => {
@@ -23,11 +27,24 @@ export default function AccountOptions() {
     }
 
     const options = [
-        { id: "profile", label: "Profile", type: "link", href: "/profile" },
+        { id: "address", label: "Address", type: "action", href: "/address" },
         { id: "orders", label: "Orders", type: "link", href: "/orders" },
-        { id: "cart", label: "Cart", type: "link", href: "/cart" },
+        { id: "cart", label: "Cart", type: "action", href: "/cart" },
         { id: "wishlist", label: "Wishlist", type: "link", href: "/wishlist" }
     ]
+
+    const handleOptionsActions = (id:string) => {
+        switch (id) {
+            case "cart":
+                closeAccountOptions();
+                openCart();
+                break;
+            case "address":
+                closeAccountOptions();
+                openAddressOptions();
+                break;
+        }
+    }
 
     return (
         <AnimatePresence>
@@ -69,7 +86,7 @@ export default function AccountOptions() {
                             {session?.user ? (
                                 // ✅ Logged-in UI
                                 <>
-                                    <div className="relative h-44 w-full flex flex-col items-center justify-center gap-2 overflow-hidden">
+                                    <div className="relative h-44 w-full flex flex-col items-center justify-center overflow-hidden">
                                         <Image
                                             src={session.user.image || "/default-avatar.png"}
                                             alt="Avatar"
@@ -78,21 +95,51 @@ export default function AccountOptions() {
                                             className="relative z-10 rounded-full border-4 border-white shadow-md"
                                         />
 
-                                        <div className="relative z-10 text-base font-semibold text-obsidian">
-                                            {session.user.name}
+                                        <div className="flex items-center justify-center gap-2 pt-6">
+                                            <div className="relative z-10 text-base font-semibold text-obsidian capitalize">
+                                                {session.user.name}
+                                            </div>
+                                            <div className="cursor-pointer scale-90 active:scale-70">
+                                                <Pencil className="w-4 h-4 text-obsidian/50 inline-block ml-1" />
+                                            </div>
                                         </div>
+
                                         <div className="relative z-10 text-xs text-obsidian/60">
                                             {session.user.email}
                                         </div>
                                     </div>
 
                                     <div className="divide-y divide-brand-200">
-                                        {options.map((option) => (
-                                            <Link key={option.id} href={option.href} className="group flex items-center justify-between px-4 py-4 transition-all duration-200 hover:bg-brand-50 active:scale-[0.98]" >
-                                                <span className="text-sm font-medium text-obsidian">{option.label}</span>
-                                                <ChevronRight className="w-4 h-4 text-obsidian/50 transition-transform duration-200 group-hover:translate-x-1" />
-                                            </Link>
-                                        ))}
+                                        {options.map((option) => {
+                                            const content = (
+                                                <>
+                                                    <span className="text-sm font-medium text-obsidian">
+                                                        {option.label}
+                                                    </span>
+                                                    <ChevronRight className="w-4 h-4 text-obsidian/50 transition-transform duration-200 group-hover:translate-x-1" />
+                                                </>
+                                            );
+                                            if (option.type === "link") {
+                                                return (
+                                                    <Link
+                                                        key={option.id}
+                                                        href={option.href}
+                                                        className="group flex items-center justify-between px-4 py-4 transition-all duration-200 hover:bg-brand-50 active:scale-[0.98]"
+                                                    >
+                                                        {content}
+                                                    </Link>
+                                                );
+                                            }
+                                            return (
+                                                <button
+                                                    key={option.id}
+                                                    onClick={() => handleOptionsActions(option.id)}
+                                                    className="group flex w-full items-center justify-between px-4 py-4 text-left transition-all duration-200 hover:bg-brand-50 active:scale-[0.98]"
+                                                >
+                                                    {content}
+                                                </button>
+                                            );
+                                        })}
                                     </div>
                                 </>
                             ) : (

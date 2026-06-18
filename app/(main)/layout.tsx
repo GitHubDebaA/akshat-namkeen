@@ -4,6 +4,8 @@ import Footer from "@/components/footer";
 import Provider from "../SessionProvider";
 import Cart from "@/components/cart/cart";
 import AccountOptions from "@/components/account/options/options";
+import AddressOptions from "@/components/address/address";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
     title: "Akshat Namkeen",
@@ -16,7 +18,9 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
             <Header />
             <Cart />
             <AccountOptions />
+            <AddressOptions />
             {children}
+            <Toaster />
             <Footer />
         </Provider>
     );

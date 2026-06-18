@@ -2,10 +2,11 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Heart, ShoppingBag, Star } from "lucide-react";
+import { Heart, Minus, Plus, ShoppingBag, Star } from "lucide-react";
 import { Product } from "@prisma/client";
 import { formatPrice } from "@/lib/utils";
 import { useCart } from "@/store/cart";
+import { toast } from "sonner"
 
 const ProductCard = ({ product }: { product: Product }) => {
     const [wished, setWished] = useState(false);
@@ -17,6 +18,14 @@ const ProductCard = ({ product }: { product: Product }) => {
         addItem(product, quantity);
         setAdded(true);
         setTimeout(() => setAdded(false), 2000);
+        toast.success("Item added to cart!", {
+            position: "bottom-left",
+            style: {
+                background: "#111827",
+                color: "#fff",
+                border: "1px solid #374151",
+            },
+        });
     };
 
     return (
@@ -41,9 +50,9 @@ const ProductCard = ({ product }: { product: Product }) => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-300" />
 
                     {/* Badge */}
-                    <div className="absolute top-3 left-3 flex items-center justify-center px-3 py-1 rounded-full bg-obsidian/90 backdrop-blur-md text-ivory text-[10px] font-semibold tracking-widest uppercase shadow-sm">
+                    {/* <div className="absolute top-3 left-3 flex items-center justify-center px-3 py-1 rounded-full bg-obsidian/90 backdrop-blur-md text-ivory text-[10px] font-semibold tracking-widest uppercase shadow-sm">
                         Newly Added
-                    </div>
+                    </div> */}
 
                     {/* Wishlist */}
 
@@ -64,16 +73,47 @@ const ProductCard = ({ product }: { product: Product }) => {
                     </button>
 
                     {/* Floating Add to Cart */}
+                    <div className="absolute bottom-3 left-3 right-3">
+                        <div className="backdrop-blur-md bg-white/80 border rounded-xl p-2 shadow-lg">
+                            <div className="flex items-center justify-between gap-3">
+                                {/* Quantity Selector */}
+                                <div className="flex items-center bg-white/70 rounded-lg overflow-hidden">
+                                    <button
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setQuantity(Math.max(1, quantity - 1));
+                                        }}
+                                        className="w-9 h-9 flex items-center justify-center hover:bg-white transition text-obsidian"
+                                    >
+                                        <Minus className="w-4 h-4" />
+                                    </button>
+                                    <span className="w-10 text-center font-medium text-obsidian">
+                                        {quantity}
+                                    </span>
+                                    <button
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setQuantity(quantity + 1);
+                                        }}
+                                        className="w-9 h-9 flex items-center justify-center text-obsidian hover:bg-white transition"
+                                    >
+                                        <Plus className="w-4 h-4"/>
+                                    </button>
+                                </div>
 
-                    <button
-                        onClick={(e) => {
-                            e.preventDefault();
-                            handleAddToCart();
-                        }}
-                        className="absolute bottom-3 right-3 w-10 h-10 flex items-center justify-center rounded-full bg-black text-white shadow-lg opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 hover:scale-110"
-                    >
-                        <ShoppingBag className="w-4 h-4" />
-                    </button>
+                                {/* Add to Cart */}
+                                <button
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        handleAddToCart();
+                                    }}
+                                    className="flex items-center justify-center text-obsidian cursor-pointer"
+                                >
+                                    <ShoppingBag className="w-4 h-4" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </Link>
 

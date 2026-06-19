@@ -2,6 +2,9 @@
 import { useState, useMemo } from "react";
 import Image from 'next/image';
 import { Product } from "@prisma/client";
+import { ChevronRight, Minus, MoveDown, MoveUp } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import ProductCard from "@/components/products/card";
 
 interface Props {
     products: Product[];
@@ -13,9 +16,9 @@ export default function BestSelling({ products }: Props) {
     const sortedProducts = useMemo(() => {
         const data = [...products];
         switch (sortBy) {
-            case "price-low-high":
+            case "low to high":
                 return data.sort((a, b) => a.price - b.price);
-            case "price-high-low":
+            case "high to low":
                 return data.sort((a, b) => b.price - a.price);
             default:
                 return data;
@@ -23,10 +26,15 @@ export default function BestSelling({ products }: Props) {
 
     }, [products, sortBy]);
 
+    const handleSortBy = () => {
+        if (sortBy === 'default') return setSortBy('low to high');
+        setSortBy(sortBy === 'low to high' ? 'high to low' : 'low to high');
+    }
+
     return (
         <div>
-            {/* SECTION HEADER */}
-            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 border-b border-gray-100 pb-6">
+            {/* Section @@Header and Description */}
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 pb-6">
                 <div className="max-w-xl">
                     <h2 className="text-2xl font-md text-obsidian">
                         Our Best Sellers
@@ -36,69 +44,42 @@ export default function BestSelling({ products }: Props) {
                     </p>
                 </div>
 
-                {/* SORT CONTROLLER */}
-                <div className="flex items-center gap-2 self-start md:self-auto">
-                    <label htmlFor="sort" className="text-xs font-medium uppercase tracking-wider text-gray-400 whitespace-nowrap">
-                        Sort By:
-                    </label>
-                    <select
-                        id="sort"
-                        value={sortBy}
-                        onChange={(e) => setSortBy(e.target.value)}
-                        className="text-sm font-medium bg-ivory/40 border border-gray-200 rounded-lg px-3 py-2 text-charcoal focus:outline-none focus:border-brand-500 cursor-pointer"
-                    >
-                        <option value="default">Featured</option>
-                        <option value="low-to-high">Price: Low to High</option>
-                        <option value="high-to-low">Price: High to Low</option>
-                    </select>
+                {/* Section @@Sort by controller */}
+                <div className="flex items-center self-start md:self-auto gap-2 group cursor-pointer" onClick={handleSortBy}>
+                    <div className="flex flex-col self-start md:self-auto">
+                        <label className="text-xs font-medium uppercase tracking-wider text-obsidian/50 whitespace-nowrap">
+                            Sort By price
+                        </label>
+                        <div className="text-xs font-bold uppercase tracking-widest text-brand-500">
+                            {sortBy}
+                        </div>
+                    </div>
+                    <div>
+                        {sortBy === 'default' ? <Minus className="w-5 h-5" /> : null}
+                        {sortBy === 'high to low' ? <MoveUp className="w-5 h-5" /> : null}
+                        {sortBy === 'low to high' ? <MoveDown className="w-5 h-5" /> : null}
+                    </div>
                 </div>
             </div>
 
-            {/* DYNAMIC PRODUCT GRID */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+            {/* Section @@Best Selling Product Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
                 {sortedProducts.map((product) => (
-                    <div
-                        key={product.id}
-                        className="group group-last:max-md:col-span-2 cursor-pointer flex flex-col justify-between"
-                    >
-                        <div>
-                            {/* Next.js Image Container */}
-                            <div className="relative aspect-[3/4] group-last:max-md:aspect-video rounded-2xl overflow-hidden bg-brand-100 mb-3">
-                                <Image
-                                    src={product.dpURL}
-                                    alt={product.name}
-                                    fill
-                                    sizes="(max-width: 768px) 50vw, 20vw" // Tells Next.js what size to optimize/download
-                                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                                />
-
-                                {/* Overlay Container */}
-                                <div className="absolute inset-x-0 bottom-0 px-4 py-3 bg-ivory/70 text-charcoal backdrop-blur-sm flex flex-col gap-0.5 items-center justify-center z-10">
-                                    <div className="text-center capitalize text-xs font-medium tracking-wider truncate w-full">
-                                        product.category
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Product Info Block */}
-                            <div className="space-y-1 px-1">
-                                <h3 className="font-medium text-sm text-charcoal truncate">
-                                    {product.name}
-                                </h3>
-                                <p className="text-sm font-semibold text-gray-700">
-                                    ${product.price.toFixed(2)}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    <ProductCard key={product.id} product={product} />
                 ))}
-            </div>
 
-            {/* VIEW ALL ACTION BUTTON */}
-            <div className="flex justify-center pt-4">
-                <button className="px-8 py-3 bg-charcoal text-ivory text-sm font-medium tracking-wide rounded-xl hover:bg-opacity-90 transition-all active:scale-[0.98] shadow-sm">
-                    View All Best Selling Items
-                </button>
+                {/* Section @@View all action */}
+                <div className="flex flex-col items-center justify-center gap-2">
+                    <div className="text-xs font-bold uppercase tracking-widest text-brand-500">
+                        Customer Favorites
+                    </div>
+                    <div className="text-xs font-md tracking-widest text-brand-500">
+                        View all
+                    </div>
+                    <Button className="w-12 h-12 flex items-center justify-center rounded-full bg-obsidian text-ivory cursor-pointer">
+                        <ChevronRight className="w-5 h-5" />
+                    </Button>
+                </div>
             </div>
         </div>
     );

@@ -43,7 +43,6 @@ const ProductCard = ({ product }: { product: Product }) => {
                         alt={product.name}
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-105"
-                        unoptimized
                     />
 
                     {/* Gradient Overlay */}
@@ -118,15 +117,15 @@ const ProductCard = ({ product }: { product: Product }) => {
             </Link>
 
             <div className="px-1">
-                <p className="text-brand-500 text-[10px] font-semibold tracking-widest uppercase mb-0.5">
+                <p className="text-brand-500 text-[10px] font-semibold tracking-widest uppercase">
                     Akshat Namkeen
                 </p>
                 <Link href={`/product/${product.id}`}>
-                    <h3 className="text-sm font-medium text-obsidian hover:text-brand-700 transition-colors line-clamp-1">
+                    <h3 className="text-sm font-medium text-obsidian line-clamp-1">
                         {product.name}
                     </h3>
                 </Link>
-                <div className="flex items-center gap-1.5 mt-1 mb-2">
+                <div className="flex items-center gap-1.5 mt-1">
                     <div className="flex gap-0.5">
                         {Array(5).fill(0).map((_, i) => (
                             <Star
@@ -138,12 +137,7 @@ const ProductCard = ({ product }: { product: Product }) => {
                     <span className="text-[10px] text-obsidian/50">(100)</span>
                 </div>
                 <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold text-obsidian">{formatPrice(product.price)}</span>
-                    {product.price && (
-                        <span className="text-xs text-obsidian/40 line-through">
-                            {formatPrice(product.price + 50)}
-                        </span>
-                    )}
+                    <span className="text-sm font-medium text-obsidian">{formatPrice(product.price)}</span>
                 </div>
             </div>
         </motion.div>

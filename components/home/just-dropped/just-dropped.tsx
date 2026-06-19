@@ -9,7 +9,7 @@ interface Props {
     products: Product[];
 }
 
-export default function BestSelling({ products }: Props) {
+export default function JustDropped({ products }: Props) {
     const [sortBy, setSortBy] = useState('default');
 
     const sortedProducts = useMemo(() => {
@@ -34,12 +34,12 @@ export default function BestSelling({ products }: Props) {
         <div>
             {/* Section @@Header and Description */}
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 pb-6">
-                <div className="max-w-xl">
+                <div className="flex-1">
                     <h2 className="text-2xl font-md text-obsidian">
-                        Our Best Sellers
+                        Fresh Batches & New Flavours
                     </h2>
                     <p className="text-sm text-obsidian/50">
-                        Explore our most popular pieces loved by community members worldwide.
+                        Be the first to experience our latest culinary creations. Hand-crafted in small batches, freshly fried, and curated for the perfect crunch.
                     </p>
                 </div>
 
@@ -70,7 +70,7 @@ export default function BestSelling({ products }: Props) {
                 {/* Section @@View all action */}
                 <div className="flex flex-col items-center justify-center gap-2">
                     <div className="text-xs font-bold uppercase tracking-widest text-brand-500">
-                        Customer Favorites
+                        Just Dropped
                     </div>
                     <div className="text-xs font-md tracking-widest text-brand-500">
                         View all

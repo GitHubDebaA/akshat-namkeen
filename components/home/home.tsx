@@ -1,6 +1,9 @@
 import HeroSection from "./hero/hero";
 import ShopByCateogry from "./shop-by-category/shop-by-category";
-import BestSelling from "./best-selling/best-selling";
+// import BestSelling from "./best-selling/best-selling";
+import JustDropped from "./just-dropped/just-dropped";
+import Featured from "./featured/featured";
+
 import prisma  from "@/lib/prisma"; 
 
 export default async function Home() {
@@ -14,11 +17,20 @@ export default async function Home() {
         take: 5
     });
 
+    const featuredProducts = await prisma.product.findMany({
+        where: {
+            isActive: true,
+        },
+        take: 6
+    });
+
     return (
         <section className="space-y-6 md:space=y-12">
             <HeroSection />
             <ShopByCateogry />
-            <BestSelling products={bestSellingProducts}/>
+            {/* <BestSelling products={bestSellingProducts}/> */}
+            <Featured products={featuredProducts}></Featured>
+            <JustDropped products={bestSellingProducts}/>
         </section>
     );
 }

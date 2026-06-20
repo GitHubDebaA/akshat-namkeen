@@ -16,11 +16,11 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
     return (
         <Provider>
             <Header />
-            <Cart />
-            <AccountOptions />
-            <AddressOptions />
-            {children}
+            {/* <Cart /> */}
+            {/* <AccountOptions /> */}
+            {/* <AddressOptions /> */}
             <Toaster />
+            {children}
             <Footer />
         </Provider>
     );

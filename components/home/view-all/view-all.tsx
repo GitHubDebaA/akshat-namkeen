@@ -46,7 +46,7 @@ export default function ViewAll() {
 
                 {/* RIGHT COLUMN: Expansive Product Imagery Canvas (Takes 7 columns on desktop) */}
                 {/* Uses absolute/relative positioning to allow Next.js Image component to fill completely */}
-                <div className="lg:col-span-7 relative h-64 sm:h-80 lg:h-auto overflow-hidden group">
+                <div className="lg:col-span-7 relative h-64 sm:h-80 lg:min-h-[520px] overflow-hidden group">
                     <Image
                         src="/illustrations/view-all.png" // Premium placeholder showing a crisp Indian savory layout
                         alt="Artisanal Akshat Namkeen Collection"

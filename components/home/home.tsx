@@ -6,6 +6,7 @@ import Featured from "./featured/featured";
 
 import prisma  from "@/lib/prisma"; 
 import WhyChooseUsSection from "./why-choose-us/why-choose-us";
+import ViewAll from "./view-all/view-all";
 
 export default async function Home() {
     const bestSellingProducts = await prisma.product.findMany({
@@ -33,6 +34,7 @@ export default async function Home() {
             <JustDropped products={bestSellingProducts}/>
             <Featured products={featuredProducts} />
             <WhyChooseUsSection />
+            <ViewAll />
         </section>
     );
 }

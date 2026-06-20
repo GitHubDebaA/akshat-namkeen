@@ -29,8 +29,8 @@ export default async function Home() {
             <HeroSection />
             <ShopByCateogry />
             {/* <BestSelling products={bestSellingProducts}/> */}
-            <Featured products={featuredProducts}></Featured>
             <JustDropped products={bestSellingProducts}/>
+            <Featured products={featuredProducts}></Featured>
         </section>
     );
 }

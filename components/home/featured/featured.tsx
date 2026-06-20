@@ -1,5 +1,8 @@
 import Image from "next/image";
 import { Product } from "@prisma/client";
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button";
+
 interface Props {
     products: Product[];
 }
@@ -25,7 +28,6 @@ export default function Featured({ products }: Props) {
                 {/* Minimal Scroll Indicator */}
                 <div className="hidden md:flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
                     <span>Swipe to explore</span>
-                    <span className="h-[1px] w-12 bg-gray-300 inline-block animate-pulse"></span>
                 </div>
             </div>
 
@@ -49,15 +51,16 @@ export default function Featured({ products }: Props) {
                                 />
 
                                 {/* Micro Heritage Badge */}
-                                <span className="absolute top-4 left-4 bg-white/90 text-charcoal text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded border border-charcoal/10 backdrop-blur-sm z-10">
-                                    Signature
-                                </span>
+                                <Badge className="absolute top-4 left-4">Signature</Badge>
 
                                 {/* Sleek Retail Quick Add Bar */}
-                                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-charcoal/80 via-charcoal/40 to-transparent pt-12 pb-4 px-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-10">
-                                    <button className="w-full py-2.5 bg-ivory text-charcoal text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-opacity-95 transition-colors shadow-lg">
+                                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-obsidian/30 via-obsidian/10 to-transparent pt-12 pb-4 px-4 z-10 transition-all duration-300
+                                translate-y-0 opacity-100
+                                md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100
+                                ">
+                                    <Button className="w-full py-2.5 bg-ivory text-obsidian text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-opacity-95 transition-colors shadow-lg">
                                         + Quick Add
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
 
@@ -81,7 +84,6 @@ export default function Featured({ products }: Props) {
                     </div>
                 ))}
             </div>
-
         </section>
     );
 }

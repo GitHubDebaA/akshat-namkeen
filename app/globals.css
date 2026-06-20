@@ -145,3 +145,15 @@
 .menu-item {
 	@apply block px-4 py-3 rounded-md hover:bg-gray-100 transition text-sm;
 }
+
+/* Tailored utility to hide native scrollbar tracks */
+@layer utilities {
+	.scrollbar-none::-webkit-scrollbar {
+		display: none;
+	}
+
+	.scrollbar-none {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+}

@@ -33,8 +33,8 @@ export default async function Home() {
             {/* <BestSelling products={bestSellingProducts}/> */}
             <JustDropped products={bestSellingProducts} />
             <Featured products={featuredProducts} />
-            {/* <WhyChooseUsSection /> */}
-            <ViewAll />
+            <WhyChooseUsSection />
+            {/* <ViewAll /> */}
         </section>
     );
 }

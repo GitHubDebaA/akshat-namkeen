@@ -34,7 +34,7 @@ export default async function Home() {
             <JustDropped products={bestSellingProducts} />
             <Featured products={featuredProducts} />
             <WhyChooseUsSection />
-            {/* <ViewAll /> */}
+            <ViewAll />
         </section>
     );
 }

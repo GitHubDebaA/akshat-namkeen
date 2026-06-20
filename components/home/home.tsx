@@ -4,7 +4,7 @@ import ShopByCateogry from "./shop-by-category/shop-by-category";
 import JustDropped from "./just-dropped/just-dropped";
 import Featured from "./featured/featured";
 
-import prisma  from "@/lib/prisma"; 
+import prisma from "@/lib/prisma";
 import WhyChooseUsSection from "./why-choose-us/why-choose-us";
 import ViewAll from "./view-all/view-all";
 
@@ -27,13 +27,13 @@ export default async function Home() {
     });
 
     return (
-        <section className="space-y-6 md:space=y-12">
+        <section className="space-y-6 md:space-y-12">
             <HeroSection />
             <ShopByCateogry />
             {/* <BestSelling products={bestSellingProducts}/> */}
-            <JustDropped products={bestSellingProducts}/>
+            <JustDropped products={bestSellingProducts} />
             <Featured products={featuredProducts} />
-            <WhyChooseUsSection />
+            {/* <WhyChooseUsSection /> */}
             <ViewAll />
         </section>
     );

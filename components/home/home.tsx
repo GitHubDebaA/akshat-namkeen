@@ -3,10 +3,10 @@ import ShopByCateogry from "./shop-by-category/shop-by-category";
 // import BestSelling from "./best-selling/best-selling";
 import JustDropped from "./just-dropped/just-dropped";
 import Featured from "./featured/featured";
+import ViewAll from "./view-all/view-all";
+import WhyChooseUsSection from "./why-choose-us/why-choose-us";
 
 import prisma from "@/lib/prisma";
-import WhyChooseUsSection from "./why-choose-us/why-choose-us";
-import ViewAll from "./view-all/view-all";
 
 export default async function Home() {
     const bestSellingProducts = await prisma.product.findMany({

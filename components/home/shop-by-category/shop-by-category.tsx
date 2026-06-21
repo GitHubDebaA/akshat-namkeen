@@ -1,11 +1,12 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const categories = [
-    { label: "Mixtures", image: "/categories/mixture.png", },
-    { label: "Spicy Snacks", image: "/categories/spicy-snack.png" },
-    { label: "Salted Snacks", image: "/categories/salted-snack.png" },
-    { label: "Corn Snacks", image: "/categories/corn-snack.png" },
-    { label: "Bhujia", image: "/categories/bhujia.png" }
+    { label: "Mixtures", value: "mixtures", image: "/categories/mixture.png", },
+    { label: "Spicy Snacks", value: "spicy-snacks", image: "/categories/spicy-snack.png" },
+    { label: "Salted Snacks", value: "salted-snacks", image: "/categories/salted-snack.png" },
+    { label: "Corn Snacks", value: "corn-snacks", image: "/categories/corn-snack.png" },
+    { label: "Bhujia", value: "bhujia", image: "/categories/bhujia.png" }
 ];
 
 export default function ShopByCateogry() {
@@ -23,7 +24,7 @@ export default function ShopByCateogry() {
 
             <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
                 {categories.map((category) => (
-                    <div key={category.label} className="group cursor-pointer last:max-md:col-span-2">
+                    <Link href={`/products/category/${category.value}`} key={category.label} className="group cursor-pointer last:max-md:col-span-2">
                         <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-brand-100 mb-1 group-last:max-md:aspect-video">
                             <Image
                                 src={category.image}
@@ -40,7 +41,7 @@ export default function ShopByCateogry() {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </Link>
                 ))}
             </div>
         </div>

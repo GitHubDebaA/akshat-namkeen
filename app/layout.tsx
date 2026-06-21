@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next"
 import "./globals.css";
 import Provider from "./SessionProvider";
 export const metadata: Metadata = {
@@ -11,6 +12,7 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
 		<html lang="en">
 			<body className="font-poppins antialiased">
 				<Provider>
+					<Analytics />
 					{children}
 				</Provider>
 			</body>

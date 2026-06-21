@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 
 import { Product } from "@prisma/client";
 import ProductCard from "./card";
@@ -13,7 +13,7 @@ import { Separator } from '../ui/separator';
 import { ArrowDownUp, ChevronDown, Search, Settings2 } from "lucide-react"
 import Image from 'next/image';
 import { Button } from '../ui/button';
-import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '../ui/drawer';
+import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerTrigger } from '../ui/drawer';
 
 const CATEGORIES = ["Mixture", "Spicy Snacks", "Salted Snacks", "Corn Snacks", "Bhujia"];
 
@@ -21,6 +21,19 @@ export default function ProductList({ products }: { products: Product[] }) {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState<string[]>([]);
     const [sortBy, setSortBy] = useState("relevance");
+    const [isSticky, setIsSticky] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsSticky(window.scrollY > 20);
+        };
+        window.addEventListener("scroll", handleScroll);
+
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+
+    }, []);
 
     // 3. FILTER LOGIC PERFORMANCE OPTIMIZATION
     const filteredProducts = useMemo(() => {
@@ -183,7 +196,7 @@ export default function ProductList({ products }: { products: Product[] }) {
 
             {/* Section @@Mobile Filter and Products */}
             <div className="md:hidden space-y-6">
-                <div className="px-6 pt-6 space-y-1 sticky top-15 h-fit self-start z-10 bg-white">
+                <div className={`px-6 pt-6 space-y-1 sticky top-15 h-fit self-start z-10 bg-white transition-all duration-300 ${isSticky ? "pb-6 shadow-[0_8px_30px_rgba(0,0,0,0.08)] border-b border-black/5" : ""}`}>
                     <Breadcrumb className="text-sm">
                         <BreadcrumbList>
                             <BreadcrumbItem>
@@ -296,6 +309,6 @@ export default function ProductList({ products }: { products: Product[] }) {
                     )
                 }
             </div>
-        </main>
+        </main >
     );
 }

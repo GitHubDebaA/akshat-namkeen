@@ -4,6 +4,7 @@ import { Product } from "@prisma/client";
 import { ChevronRight, Minus, MoveDown, MoveUp } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import ProductCard from "@/components/products/card";
+import Link from "next/link";
 
 interface Props {
     products: Product[];
@@ -75,9 +76,11 @@ export default function JustDropped({ products }: Props) {
                     <div className="text-xs font-md tracking-widest text-brand-500">
                         View all
                     </div>
-                    <Button className="w-12 h-12 flex items-center justify-center rounded-full bg-obsidian text-ivory cursor-pointer">
-                        <ChevronRight className="w-5 h-5" />
-                    </Button>
+                    <Link href="/products">
+                        <Button className="w-12 h-12 flex items-center justify-center rounded-full bg-obsidian text-ivory cursor-pointer">
+                            <ChevronRight className="w-5 h-5" />
+                        </Button>
+                    </Link>
                 </div>
             </div>
         </div>

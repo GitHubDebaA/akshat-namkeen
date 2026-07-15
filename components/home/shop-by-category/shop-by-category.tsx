@@ -35,7 +35,7 @@ export default function ShopByCateogry() {
                             />
 
                             {/* Overlay Container */}
-                            <div className="absolute inset-x-0 bottom-0 px-4 py-3 bg-white/40 text-ivory backdrop-blur-sm flex flex-col gap-1 items-center justify-center">
+                            <div className="absolute inset-x-0 bottom-0 px-4 py-3 bg-ivory/30 text-ivory backdrop-blur-sm flex flex-col gap-1 items-center justify-center">
                                 <div className="text-center capitalize text-sm font-medium tracking-wider">
                                     {category.label}
                                 </div>

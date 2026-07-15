@@ -37,7 +37,7 @@ export default function HeroSection() {
     return (
         <Carousel
             setApi={setApi}
-            className="w-full"
+            className="relative w-full"
             plugins={[
                 Autoplay({
                     delay: 3000,
@@ -45,7 +45,7 @@ export default function HeroSection() {
             ]}
         >
             <CarouselContent>
-                <CarouselItem className="relative w-full h-[200px] md:h-[200px]">
+                <CarouselItem className="relative w-full h-[200px]">
                     <Image
                         src="https://0znsc5k7w8.ufs.sh/f/Pq5X8YsNcm6T2PPqEKcwvCXxHj6InyPFMdzqg8aB1t52uSGo"
                         alt="Slide 1"
@@ -54,7 +54,7 @@ export default function HeroSection() {
                         priority
                     />
                 </CarouselItem>
-                <CarouselItem className="relative w-full h-[200px] md:h-[200px]">
+                <CarouselItem className="relative w-full h-[200px]">
                     <Image
                         src="https://0znsc5k7w8.ufs.sh/f/Pq5X8YsNcm6T8yb5VZCS9qJN72GbUytsVo8xMa3e1OTRP5vL"
                         alt="Slide 2"
@@ -62,7 +62,7 @@ export default function HeroSection() {
                         className="object-cover"
                     />
                 </CarouselItem>
-                <CarouselItem className="relative w-full h-[200px] md:h-[200px]">
+                <CarouselItem className="relative w-full h-[200px]">
                     <Image
                         src="https://0znsc5k7w8.ufs.sh/f/Pq5X8YsNcm6TyBB9I1GkeOg1rqolhXsVzHtijx6aBJvLd253"
                         alt="Slide 3"
@@ -83,8 +83,8 @@ export default function HeroSection() {
                     />
                 ))}
             </div>
-            <CarouselPrevious className="hidden lg:inline-flex" />
-            <CarouselNext className="hidden lg:inline-flex" />
+            <CarouselPrevious className="hidden lg:inline-flex left-4 z-20" />
+            <CarouselNext className="hidden lg:inline-flex right-4 z-20" />
         </Carousel>
     );
 }

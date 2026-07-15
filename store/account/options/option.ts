@@ -32,24 +32,13 @@ export const useAccountOptions = create<AccountOption>()(
                 }
             },
             handleCredentialSignIn: async (email: string, password: string) => {
-                try {
-                    const result = await signIn("credentials", {
-                        email,
-                        password,
-                        redirect: false,
-                    });
+                const result = await signIn("credentials", {
+                    email,
+                    password,
+                    redirect: false,
+                });
 
-                    console.log("Credentials Sign-In Result:", result);
-
-                    if (result?.error) {
-                        alert(result.error);
-                    } else {
-                        window.location.href = "/";
-                    }
-                } catch (error) {
-                    console.error("Credentials Sign-In Error:", error);
-                    alert("An unexpected error occurred. Please try again.");
-                }
+                return result;
             }
         }),
         { name: "akshat-namkeen-account-options" }

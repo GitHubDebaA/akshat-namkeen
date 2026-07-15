@@ -3,22 +3,19 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Heart, Minus, Plus, ShoppingBag, Star } from "lucide-react";
+import { Heart, ShoppingBag, Star } from "lucide-react";
 import { Product } from "@prisma/client";
 import { formatPrice } from "@/lib/utils";
 import { useCart } from "@/store/cart";
 import { toast } from "sonner"
+import { Button } from "../ui/button";
 
 const ProductCard = ({ product }: { product: Product }) => {
     const [wished, setWished] = useState(false);
-    const [quantity, setQuantity] = useState(1);
-    const [added, setAdded] = useState(false);
     const { addItem } = useCart();
 
     const handleAddToCart = () => {
-        addItem(product, quantity);
-        setAdded(true);
-        setTimeout(() => setAdded(false), 2000);
+        addItem(product, 1);
         toast.success("Item added to cart!", {
             position: "bottom-left",
             style: {
@@ -47,7 +44,7 @@ const ProductCard = ({ product }: { product: Product }) => {
                     />
 
                     {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-300" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-300" />
 
                     {/* Badge */}
                     {/* <div className="absolute top-3 left-3 flex items-center justify-center px-3 py-1 rounded-full bg-obsidian/90 backdrop-blur-md text-ivory text-[10px] font-semibold tracking-widest uppercase shadow-sm">
@@ -55,7 +52,6 @@ const ProductCard = ({ product }: { product: Product }) => {
                     </div> */}
 
                     {/* Wishlist */}
-
                     <button
                         onClick={(e) => {
                             e.preventDefault();
@@ -74,45 +70,29 @@ const ProductCard = ({ product }: { product: Product }) => {
 
                     {/* Floating Add to Cart */}
                     <div className="absolute bottom-3 left-3 right-3">
-                        <div className="backdrop-blur-md bg-white/80 border rounded-xl p-2 shadow-lg">
-                            <div className="flex items-center justify-between gap-3">
-                                {/* Quantity Selector */}
-                                <div className="flex items-center bg-white/70 rounded-lg overflow-hidden">
-                                    <button
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            setQuantity(Math.max(1, quantity - 1));
-                                        }}
-                                        className="w-9 h-9 flex items-center justify-center hover:bg-white transition text-obsidian"
-                                    >
-                                        <Minus className="w-4 h-4" />
-                                    </button>
-                                    <span className="w-10 text-center font-medium text-obsidian">
-                                        {quantity}
-                                    </span>
-                                    <button
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            setQuantity(quantity + 1);
-                                        }}
-                                        className="w-9 h-9 flex items-center justify-center text-obsidian hover:bg-white transition"
-                                    >
-                                        <Plus className="w-4 h-4"/>
-                                    </button>
-                                </div>
-
-                                {/* Add to Cart */}
-                                <button
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        handleAddToCart();
-                                    }}
-                                    className="flex items-center justify-center text-obsidian cursor-pointer"
-                                >
-                                    <ShoppingBag className="w-4 h-4" />
-                                </button>
-                            </div>
-                        </div>
+                        {/* Add to Cart */}
+                        {/* <Button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleAddToCart();
+                            }}
+                            className="w-full h-11 rounded-full bg-ivory/30 backdrop-blur-sm text-ivory hover:bg-project_primary transition-all duration-300 shadow-lg hover:shadow-xl font-medium cursor-pointer group/button"
+                        >
+                            <ShoppingBag className="w-4 h-4 transition-transform duration-300 group-hover/button:-translate-y-0.5" />
+                            <span>Add to bag</span>
+                        </Button> */}
+                        <Button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleAddToCart();
+                            }}
+                            className="relative overflow-hidden h-11 w-full text-sm rounded-full bg-obsidian text-white group/button transition-all duration-300 hover:shadow-xl cursor-pointer">
+                            <span className="absolute inset-0 bg-project_primary scale-x-0 origin-left transition-transform duration-300 group-hover/button:scale-x-100"></span>
+                            <span className="relative flex items-center justify-center gap-2">
+                                <ShoppingBag className="w-4 h-4" />
+                                Add to Cart
+                            </span>
+                        </Button>
                     </div>
                 </div>
             </Link>

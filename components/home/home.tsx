@@ -28,7 +28,9 @@ export default async function Home() {
 
     return (
         <section className="space-y-6 md:space-y-12">
-            <HeroSection />
+            <section className="overflow-hidden">
+                <HeroSection />
+            </section>
             <ShopByCateogry />
             {/* <BestSelling products={bestSellingProducts}/> */}
             <JustDropped products={bestSellingProducts} />

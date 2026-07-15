@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import { useAccountOptions } from "@/store/account/options/option";
 import { useAddressOptions } from "@/store/address/address";
 import { useCart } from "@/store/cart";
@@ -18,8 +20,32 @@ export default function AccountOptions() {
     const { openCart } = useCart();
     const { data: session } = useSession();
 
-    const HandleCredentialSignIn = () => {
-        handleCredentialSignIn('email@example.com', 'password');
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+
+    const HandleCredentialSignIn = async () => {
+        setError("");
+
+        if (!email || !password) {
+            setError("Please fill all fields.");
+            return;
+        }
+
+        setLoading(true);
+        const result = await handleCredentialSignIn(email, password);
+
+        setLoading(false);
+
+        if (result?.error) {
+            setError(result.error);
+            return;
+        }
+
+        closeAccountOptions();
+
+        router.refresh();
     }
 
     const HandleGoogleSignin = () => {
@@ -33,7 +59,7 @@ export default function AccountOptions() {
         { id: "wishlist", label: "Wishlist", type: "link", href: "/wishlist" }
     ]
 
-    const handleOptionsActions = (id:string) => {
+    const handleOptionsActions = (id: string) => {
         switch (id) {
             case "cart":
                 closeAccountOptions();
@@ -162,6 +188,8 @@ export default function AccountOptions() {
                                             <label className="text-sm">Email</label>
                                             <input
                                                 type="email"
+                                                value={email}
+                                                onChange={(e) => setEmail(e.target.value)}
                                                 placeholder="Enter your email"
                                                 className="w-full mt-1 px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-project_primary-foreground"
                                             />
@@ -173,6 +201,8 @@ export default function AccountOptions() {
                                             <div className="relative">
                                                 <input
                                                     type="password"
+                                                    value={password}
+                                                    onChange={(e) => setPassword(e.target.value)}
                                                     placeholder="Enter your password"
                                                     className="w-full mt-1 px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-project_primary-foreground"
                                                 />
@@ -184,8 +214,8 @@ export default function AccountOptions() {
                                             </div>
                                         </div>
 
-                                        <Button onClick={HandleCredentialSignIn} className="text-sm w-full py-6 bg-project_primary hover:bg-project_primary-foreground text-white transition-colors cursor-pointer uppercase">
-                                            Sign In
+                                        <Button disabled={loading} onClick={HandleCredentialSignIn} className="text-sm w-full py-6 bg-project_primary hover:bg-project_primary-foreground text-white transition-colors cursor-pointer uppercase">
+                                            {loading ? "Signing In..." : "Sign In"}
                                         </Button>
 
                                         {/* Divider */}
@@ -196,7 +226,7 @@ export default function AccountOptions() {
                                         </div>
 
                                         {/* Social Login */}
-                                        <Button onClick={HandleGoogleSignin} className="text-sm w-full py-6 bg-obsidian/70 hover:bg-obsidian text-ivory transition-colors cursor-pointer uppercase">
+                                        <Button onClick={HandleGoogleSignin} className="text-sm w-full py-6 bg-obsidian hover:bg-obsidian/90 text-ivory transition-colors cursor-pointer uppercase">
                                             {/* Google Icon */}
                                             <svg width="64px" height="64px" viewBox="-0.5 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000">
                                                 <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
@@ -235,22 +265,32 @@ export default function AccountOptions() {
                                     Sign Out
                                 </Button>
                             ) : (
-                                <div className="flex items-center justify-center gap-1 text-sm">
-                                    <span className="text-gray-500">
-                                        {"Don't have an account?"}
+                                <div>
+                                    <div className="flex items-center justify-center gap-1 text-sm">
+                                        <span className="text-gray-500">
+                                            New to Akshat Namkeen?
+                                        </span>
+                                        <Link
+                                            href="/signup"
+                                            className="text-project_primary hover:underline uppercase"
+                                        >
+                                            Sign Up
+                                        </Link>
+                                    </div>
+                                    <div>
+
+                                    </div>
+                                    <span className="text-gray-500 text-xs">
+                                        Create an account to save addresses,
+                                        track orders, and checkout faster.
                                     </span>
-                                    <Link
-                                        href="/signup"
-                                        className="text-project_primary hover:underline uppercase"
-                                    >
-                                        Sign Up
-                                    </Link>
                                 </div>
                             )}
                         </div>
                     </motion.div>
                 </>
-            )}
-        </AnimatePresence>
+            )
+            }
+        </AnimatePresence >
     );
 }

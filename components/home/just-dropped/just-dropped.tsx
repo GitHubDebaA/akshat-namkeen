@@ -77,7 +77,7 @@ export default function JustDropped({ products }: Props) {
                         View all
                     </div>
                     <Link href="/products">
-                        <Button className="w-12 h-12 flex items-center justify-center rounded-full bg-obsidian text-ivory cursor-pointer">
+                        <Button className="w-12 h-12 flex items-center justify-center rounded-full bg-obsidian text-ivory cursor-pointer transition-transform duration-700 hover:scale-105">
                             <ChevronRight className="w-5 h-5" />
                         </Button>
                     </Link>

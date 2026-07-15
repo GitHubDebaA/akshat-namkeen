@@ -35,17 +35,8 @@ export default function AccountOptions() {
 
         setLoading(true);
         const result = await handleCredentialSignIn(email, password);
-
-        setLoading(false);
-
-        if (result?.error) {
-            setError(result.error);
-            return;
-        }
-
+        console.log(result);
         closeAccountOptions();
-
-        router.refresh();
     }
 
     const HandleGoogleSignin = () => {

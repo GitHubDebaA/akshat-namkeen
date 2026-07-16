@@ -3,7 +3,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Heart, ShoppingBag, Star } from "lucide-react";
+import { Heart, Minus, Plus, ShoppingBag, Star } from "lucide-react";
 import { Product } from "@prisma/client";
 import { formatPrice } from "@/lib/utils";
 import { useCart } from "@/store/cart";
@@ -12,7 +12,10 @@ import { Button } from "../ui/button";
 
 const ProductCard = ({ product }: { product: Product }) => {
     const [wished, setWished] = useState(false);
-    const { addItem } = useCart();
+    const { addItem, items, updateQuantity } = useCart();
+
+    const cartItem = items.find((item) => item.product.id === product.id);
+    const quantity = cartItem?.quantity ?? 0;
 
     const handleAddToCart = () => {
         addItem(product, 1);
@@ -24,6 +27,24 @@ const ProductCard = ({ product }: { product: Product }) => {
                 border: "1px solid #374151",
             },
         });
+    };
+
+    const handleIncrease = (e: React.MouseEvent) => {
+        e.preventDefault();
+
+        if (cartItem) {
+            updateQuantity(product.id, quantity + 1);
+        } else {
+            addItem(product, 1);
+        }
+    };
+
+    const handleDecrease = (e: React.MouseEvent) => {
+        e.preventDefault();
+
+        if (!cartItem) return;
+
+        updateQuantity(product.id, quantity - 1);
     };
 
     return (
@@ -81,18 +102,43 @@ const ProductCard = ({ product }: { product: Product }) => {
                             <ShoppingBag className="w-4 h-4 transition-transform duration-300 group-hover/button:-translate-y-0.5" />
                             <span>Add to bag</span>
                         </Button> */}
-                        <Button
-                            onClick={(e) => {
-                                e.preventDefault();
-                                handleAddToCart();
-                            }}
-                            className="relative overflow-hidden h-11 w-full text-sm rounded-full bg-obsidian text-white group/button transition-all duration-300 hover:shadow-xl cursor-pointer">
-                            <span className="absolute inset-0 bg-project_primary scale-x-0 origin-left transition-transform duration-300 group-hover/button:scale-x-100"></span>
-                            <span className="relative flex items-center justify-center gap-2">
-                                <ShoppingBag className="w-4 h-4" />
-                                Add to Cart
-                            </span>
-                        </Button>
+
+                        {
+                            quantity === 0 ? (
+                                <Button
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        handleAddToCart();
+                                    }}
+                                    className="relative overflow-hidden h-11 w-full text-sm rounded-full bg-obsidian text-white group/button transition-all duration-300 hover:shadow-xl cursor-pointer">
+                                    <span className="absolute inset-0 bg-project_primary scale-x-0 origin-left transition-transform duration-300 group-hover/button:scale-x-100"></span>
+                                    <span className="relative flex items-center justify-center gap-2">
+                                        <ShoppingBag className="w-4 h-4" />
+                                        Add to Cart
+                                    </span>
+                                </Button>
+                            ) : (
+                                <div className="flex h-11 overflow-hidden rounded-full bg-obsidian text-white shadow-xl">
+                                    <button
+                                        onClick={handleDecrease}
+                                        className="flex-1 flex items-center justify-center border-r border-white/10 transition duration-150 hover:bg-white/10 active:bg-white/20 active:scale-95"
+                                    >
+                                        <Minus className="h-4 w-4" />
+                                    </button>
+
+                                    <div className="w-12 flex items-center justify-center font-semibold text-sm">
+                                        {quantity}
+                                    </div>
+
+                                    <button
+                                        onClick={handleIncrease}
+                                        className="flex-1 flex items-center justify-center border-l border-white/10 transition duration-150 hover:bg-project_primary/90 active:bg-project_primary active:scale-95"
+                                    >
+                                        <Plus className="h-4 w-4" />
+                                    </button>
+                                </div>
+                            )
+                        }
                     </div>
                 </div>
             </Link>
@@ -121,7 +167,7 @@ const ProductCard = ({ product }: { product: Product }) => {
                     <span className="text-sm font-medium text-obsidian">{formatPrice(product.price)}</span>
                 </div>
             </div>
-        </motion.div>
+        </motion.div >
     );
 };
 

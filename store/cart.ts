@@ -40,12 +40,12 @@ export const useCart = create<CartStore>()(
                                 ? { ...i, quantity: i.quantity + quantity }
                                 : i
                         ),
-                        isOpen: true,
+                        // isOpen: true,
                     }));
                 } else {
                     set((state) => ({
                         items: [...state.items, { product, quantity, selectedColor: color, selectedSize: size }],
-                        isOpen: true,
+                        // isOpen: true,
                     }));
                 }
             },

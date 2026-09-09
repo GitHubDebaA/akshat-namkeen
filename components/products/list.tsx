@@ -38,7 +38,8 @@ export default function ProductList({ products }: { products: Product[] }) {
     // 3. FILTER LOGIC PERFORMANCE OPTIMIZATION
     const filteredProducts = useMemo(() => {
         const result = products.filter((product) => {
-            const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || product.description.toLowerCase().includes(searchQuery.toLowerCase());
+            // const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || product.description.toLowerCase().includes(searchQuery.toLowerCase());
+            const matchesSearch = true;
 
             let matchesCategory = false;
             if (selectedCategory.length > 0) {
@@ -46,7 +47,8 @@ export default function ProductList({ products }: { products: Product[] }) {
                 const words = new Set(concatCategories.split(" "));
 
                 const name = product.name.toLowerCase();
-                const description = product.description.toLowerCase();
+                // const description = product.description.toLowerCase();
+                const description = 'product.description.toLowerCase()';
 
                 for (const item of words) {
                     if (name.includes(item.toLowerCase()) || description.includes(item.toLowerCase())) {
@@ -62,13 +64,11 @@ export default function ProductList({ products }: { products: Product[] }) {
 
         switch (sortBy) {
             case "price-low-to-high":
-                return [...result].sort(
-                    (a, b) => a.price - b.price
-                );
+                // return [...result].sort((a, b) => a.price - b.price);
+                return result;
             case "price-high-to-low":
-                return [...result].sort(
-                    (a, b) => b.price - a.price
-                );
+                // return [...result].sort((a, b) => b.price - a.price);
+                return result;
             case "newest-first":
                 return [...result].sort(
                     (a, b) =>
@@ -79,7 +79,7 @@ export default function ProductList({ products }: { products: Product[] }) {
                 return result;
 
         }
-    }, [products, searchQuery, selectedCategory, sortBy]);
+    }, [products, selectedCategory, sortBy]);
 
     const HandleChangeCategory = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { value, checked } = event.target;
@@ -176,9 +176,9 @@ export default function ProductList({ products }: { products: Product[] }) {
                     {
                         filteredProducts.length > 0 ? (
                             <div className="px-6 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-                                {filteredProducts.map((product) => (
+                                {/* {filteredProducts.map((product) => (
                                     <ProductCard key={product.id} product={product} />
-                                ))}
+                                ))} */}
                             </div>
                         ) : (
                             /* Empty State Handler */
@@ -293,9 +293,9 @@ export default function ProductList({ products }: { products: Product[] }) {
                 {
                     filteredProducts.length > 0 ? (
                         <div className="px-6 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-                            {filteredProducts.map((product) => (
+                            {/* {filteredProducts.map((product) => (
                                 <ProductCard key={product.id} product={product} />
-                            ))}
+                            ))} */}
                         </div>
                     ) : (
                         /* Empty State Handler */

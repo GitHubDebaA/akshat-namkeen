@@ -1,24 +1,31 @@
 "use client"
+import { Prisma } from "@prisma/client";
+type ProductVariant = Prisma.ProductVariantGetPayload<{
+    include: {
+        product: true;
+    };
+}>;
+
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Heart, Minus, Plus, ShoppingBag, Star } from "lucide-react";
-import { Product } from "@prisma/client";
-import { formatPrice } from "@/lib/utils";
+import { Heart, ImageOff, Minus, Plus, ShoppingBag, Star } from "lucide-react";
+import { formatPrice, slugify } from "@/lib/utils";
 import { useCart } from "@/store/cart";
 import { toast } from "sonner"
 import { Button } from "../ui/button";
 
-const ProductCard = ({ product }: { product: Product }) => {
+const ProductCard = ({ variant }: { variant : ProductVariant }) => {
+    console.log("Product variant data:", variant); // Debugging line to check the product data
     const [wished, setWished] = useState(false);
     const { addItem, items, updateQuantity } = useCart();
 
-    const cartItem = items.find((item) => item.product.id === product.id);
+    const cartItem = items.find((item) => item.product.id === variant.productId);
     const quantity = cartItem?.quantity ?? 0;
 
     const handleAddToCart = () => {
-        addItem(product, 1);
+        // addItem(product, 1);
         toast.success("Item added to cart!", {
             position: "bottom-left",
             style: {
@@ -33,9 +40,9 @@ const ProductCard = ({ product }: { product: Product }) => {
         e.preventDefault();
 
         if (cartItem) {
-            updateQuantity(product.id, quantity + 1);
+            // updateQuantity(product.id, quantity + 1);
         } else {
-            addItem(product, 1);
+            // addItem(product, 1);
         }
     };
 
@@ -44,7 +51,7 @@ const ProductCard = ({ product }: { product: Product }) => {
 
         if (!cartItem) return;
 
-        updateQuantity(product.id, quantity - 1);
+        // updateQuantity(product.id, quantity - 1);
     };
 
     return (
@@ -55,14 +62,38 @@ const ProductCard = ({ product }: { product: Product }) => {
             whileHover={{ y: -6 }}
             transition={{ duration: 0.35, ease: "easeOut" }}
         >
-            <Link href={`/products/${product.id}/view`}>
+            <Link href={`/product/${variant.productId}/${slugify(variant.product.name)}/view`}>
                 <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-brand-100 mb-3">
-                    <Image
-                        src={product.dpURL}
-                        alt={product.name}
-                        fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
+                    {
+                        variant.displayURL ? (
+                            <Image
+                                src={variant.displayURL}
+                                alt={variant.name}
+                                fill
+                                sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 16vw"
+                                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                priority={false}
+                            />
+                        ) : (
+                            <div className="absolute inset-0 flex flex-col items-center justify-center p-4 sm:p-6 select-none animate-pulse">
+                                <div className="text-obsidian/30 mb-2">
+                                    <ImageOff
+                                        className="w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24"
+                                        strokeWidth={1}
+                                    />
+                                </div>
+
+                                <div className="text-center">
+                                    <h2 className="text-lg sm:text-xl md:text-2xl font-light uppercase tracking-widest text-obsidian/50">
+                                        Image
+                                    </h2>
+                                    <p className="mt-1 text-[10px] sm:text-xs uppercase border-t border-obsidian/30 text-obsidian/40">
+                                        Not Available
+                                    </p>
+                                </div>
+                            </div>
+                        )
+                    }
 
                     {/* Gradient Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-300" />
@@ -147,9 +178,9 @@ const ProductCard = ({ product }: { product: Product }) => {
                 <p className="text-brand-500 text-[10px] font-semibold tracking-widest uppercase">
                     Akshat Namkeen
                 </p>
-                <Link href={`/product/${product.id}`}>
+                <Link href={`/product/${variant.id}`}>
                     <h3 className="text-sm font-medium text-obsidian line-clamp-1">
-                        {product.name}
+                        {variant.name}
                     </h3>
                 </Link>
                 <div className="flex items-center gap-1.5 mt-1">
@@ -164,7 +195,7 @@ const ProductCard = ({ product }: { product: Product }) => {
                     <span className="text-[10px] text-obsidian/50">(100)</span>
                 </div>
                 <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-obsidian">{formatPrice(product.price)}</span>
+                    <span className="text-sm font-medium text-obsidian">{formatPrice(variant.price)}</span>
                 </div>
             </div>
         </motion.div >

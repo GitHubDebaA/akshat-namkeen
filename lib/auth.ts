@@ -21,29 +21,22 @@ export const authOptions: NextAuthOptions = {
             },
             async authorize(credentials) {
                 if (!credentials?.email || !credentials?.password) {
-                    throw new Error("Missing email or password");
+                    return null;
                 }
 
                 const user = await prisma.user.findUnique({
                     where: { email: credentials.email },
                 });
 
-                if (!user) {
-                    throw new Error("User not found");
-                }
-
-                if (!user.password) {
-                    throw new Error("Please sign in with Google");
-                }
+                if (!user) return null;
+                if (!user.password) return null;
 
                 const isValid = await bcrypt.compare(
                     credentials.password,
                     user.password
                 );
 
-                if (!isValid) {
-                    throw new Error("Invalid password");
-                }
+                if (!isValid) return null;
 
                 return {
                     id: user.id,

@@ -23,21 +23,56 @@ export default function AccountOptions() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
+    const [errors, setErrors] = useState({
+        email: "",
+        password: "",
+    });
 
     const HandleCredentialSignIn = async () => {
-        setError("");
-
-        if (!email || !password) {
-            setError("Please fill all fields.");
-            return;
-        }
+        if (!validateForm()) return;
 
         setLoading(true);
-        const result = await handleCredentialSignIn(email, password);
+        const result = handleCredentialSignIn(email, password);
         console.log(result);
         closeAccountOptions();
     }
+
+    const validateForm = () => {
+        const newErrors = {
+            email: "",
+            password: "",
+        };
+
+        let isValid = true;
+
+        const trimmedEmail = email.trim();
+        const trimmedPassword = password.trim();
+
+        // Email
+        if (!trimmedEmail) {
+            newErrors.email = "Email is required.";
+            isValid = false;
+        } else if (
+            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(trimmedEmail)
+        ) {
+            newErrors.email = "Please enter a valid email address.";
+            isValid = false;
+        }
+
+        // Password
+        if (!trimmedPassword) {
+            newErrors.password = "Password is required.";
+            isValid = false;
+        } else if (trimmedPassword.length < 8) {
+            newErrors.password =
+                "Password must be at least 8 characters.";
+            isValid = false;
+        }
+
+        setErrors(newErrors);
+
+        return isValid;
+    };
 
     const HandleGoogleSignin = () => {
         handleGoogleSignin();
@@ -180,10 +215,26 @@ export default function AccountOptions() {
                                             <input
                                                 type="email"
                                                 value={email}
-                                                onChange={(e) => setEmail(e.target.value)}
+                                                onChange={(e) => {
+                                                    setEmail(e.target.value);
+                                                    if (errors.email) {
+                                                        setErrors((prev) => ({
+                                                            ...prev,
+                                                            email: "",
+                                                        }));
+                                                    }
+                                                }}
                                                 placeholder="Enter your email"
-                                                className="w-full mt-1 px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-project_primary-foreground"
+                                                className={`w-full mt-1 px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 text-sm transition-colors ${errors.email
+                                                    ? "ring-project_primary ring-2"
+                                                    : "focus:ring-obsidian/30"
+                                                    }`}
                                             />
+                                            {errors.email && (
+                                                <p className="mt-1 text-xs text-red-500">
+                                                    {errors.email}
+                                                </p>
+                                            )}
                                         </div>
 
                                         {/* Password */}
@@ -193,10 +244,26 @@ export default function AccountOptions() {
                                                 <input
                                                     type="password"
                                                     value={password}
-                                                    onChange={(e) => setPassword(e.target.value)}
+                                                    onChange={(e) => {
+                                                        setPassword(e.target.value);
+                                                        if (errors.password) {
+                                                            setErrors((prev) => ({
+                                                                ...prev,
+                                                                password: "",
+                                                            }));
+                                                        }
+                                                    }}
                                                     placeholder="Enter your password"
-                                                    className="w-full mt-1 px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-project_primary-foreground"
+                                                    className={`w-full mt-1 px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 text-sm transition-colors ${errors.password
+                                                        ? "ring-project_primary ring-2"
+                                                        : "focus:ring-obsidian/30"
+                                                        }`}
                                                 />
+                                                {errors.password && (
+                                                    <p className="mt-1 text-xs text-red-500">
+                                                        {errors.password}
+                                                    </p>
+                                                )}
                                             </div>
                                             <div className="text-right mt-1">
                                                 <Link href="/forgot-password" className="text-sm text-project_primary hover:underline hover:text-project_primary-foreground">
@@ -205,7 +272,7 @@ export default function AccountOptions() {
                                             </div>
                                         </div>
 
-                                        <Button disabled={loading} onClick={HandleCredentialSignIn} className="text-sm w-full py-6 bg-project_primary hover:bg-project_primary-foreground text-white transition-colors cursor-pointer uppercase">
+                                        <Button disabled={loading} onClick={HandleCredentialSignIn} className="text-sm w-full h-11 bg-project_primary hover:bg-project_primary-foreground text-white transition-colors cursor-pointer uppercase">
                                             {loading ? "Signing In..." : "Sign In"}
                                         </Button>
 
@@ -217,7 +284,7 @@ export default function AccountOptions() {
                                         </div>
 
                                         {/* Social Login */}
-                                        <Button onClick={HandleGoogleSignin} className="text-sm w-full py-6 bg-obsidian hover:bg-obsidian/90 text-ivory transition-colors cursor-pointer uppercase">
+                                        <Button onClick={HandleGoogleSignin} className="text-sm w-full h-11 bg-obsidian hover:bg-obsidian/90 text-ivory transition-colors cursor-pointer uppercase">
                                             {/* Google Icon */}
                                             <svg width="64px" height="64px" viewBox="-0.5 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000">
                                                 <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>

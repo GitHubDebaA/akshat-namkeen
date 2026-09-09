@@ -6,26 +6,7 @@ import Featured from "./featured/featured";
 import ViewAll from "./view-all/view-all";
 import WhyChooseUsSection from "./why-choose-us/why-choose-us";
 
-import prisma from "@/lib/prisma";
-
 export default async function Home() {
-    const bestSellingProducts = await prisma.product.findMany({
-        where: {
-            isActive: true,
-        },
-        orderBy: {
-            createdAt: "desc",
-        },
-        take: 5
-    });
-
-    const featuredProducts = await prisma.product.findMany({
-        where: {
-            isActive: true,
-        },
-        take: 6
-    });
-
     return (
         <section className="space-y-6 md:space-y-12">
             <section className="overflow-hidden">
@@ -33,8 +14,8 @@ export default async function Home() {
             </section>
             <ShopByCateogry />
             {/* <BestSelling products={bestSellingProducts}/> */}
-            <JustDropped products={bestSellingProducts} />
-            <Featured products={featuredProducts} />
+            <JustDropped />
+            <Featured />
             <WhyChooseUsSection />
             <ViewAll />
         </section>

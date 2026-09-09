@@ -1,10 +1,28 @@
 import bcrypt from "bcryptjs";
-import prisma  from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 
 export async function POST(req: Request) {
     const { email, password } = await req.json();
 
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    const otpRecord = await prisma.passwordResetOTP.findFirst({
+        where: {
+            email,
+            verified: true,
+        },
+
+        orderBy: {
+            createdAt: "desc",
+        },
+    });
+
+    if (!otpRecord) {
+        return Response.json(
+            { error: "OTP verification required." },
+            { status: 403 }
+        );
+    }
 
     await prisma.user.update({
         where: { email },

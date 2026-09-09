@@ -80,12 +80,12 @@ export default function Cart() {
                                             className="flex gap-4 p-3 rounded-2xl bg-white border border-brand-100"
                                         >
                                             <div className="relative w-20 h-20 rounded-xl overflow-hidden flex-shrink-0">
-                                                <Image
+                                                {/* <Image
                                                     src={item.product.images[0]}
                                                     alt={item.product.name}
                                                     fill
                                                     className="object-cover"
-                                                />
+                                                /> */}
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <p className="text-xs text-brand-500 font-medium tracking-wider uppercase mb-0.5">
@@ -112,7 +112,7 @@ export default function Cart() {
                                                         </button>
                                                     </div>
                                                     <p className="text-sm font-semibold">
-                                                        {formatPrice(item.product.price * item.quantity)}
+                                                        {/* {formatPrice(item.product.price * item.quantity)} */}
                                                     </p>
                                                 </div>
                                             </div>

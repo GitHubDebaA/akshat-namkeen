@@ -3,17 +3,28 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, ShoppingBag, Heart, Share2, ChevronDown, Check, ArrowLeft } from "lucide-react";
+import { Star, ShoppingBag, Heart, Share2, ChevronDown, Check, ArrowLeft, ImageOff } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import { Button } from "../ui/button"
 import { useCart } from "@/store/cart";
 
-import { Product, ProductProperty } from "@prisma/client";
+import { Prisma } from "@prisma/client";
+import { ProductProperty, ProductVariant } from "@prisma/client";
 import ProductCard from "./card";
 
+type ProductVariantWithDetails = Prisma.ProductVariantGetPayload<{
+    include: {
+        product: true;
+        properties: {
+            orderBy: {
+                order: "asc";
+            };
+        };
+    };
+}>;
+
 type Props = {
-    product: Product;
-    properties: ProductProperty[];
+    variant: ProductVariantWithDetails;
 };
 
 type TextTab = {
@@ -32,7 +43,7 @@ type PropertiesTab = {
 
 type Tab = TextTab | PropertiesTab;
 
-export default function ProductDetails({ product, properties }: Props) {
+export default function ProductDetails({ variant }: Props) {
     const [selectedImage, setSelectedImage] = useState(0);
     const [quantity, setQuantity] = useState(1);
     const [added, setAdded] = useState(false);
@@ -41,12 +52,12 @@ export default function ProductDetails({ product, properties }: Props) {
     const { addItem } = useCart();
 
     const handleAddToCart = () => {
-        addItem(product, quantity);
+        // addItem(variant, quantity);
         setAdded(true);
         setTimeout(() => setAdded(false), 2000);
     };
 
-    const sorted = [...properties].sort(
+    const sorted = [...variant.properties].sort(
         (a, b) => (a.order ?? 0) - (b.order ?? 0)
     );
 
@@ -69,7 +80,7 @@ export default function ProductDetails({ product, properties }: Props) {
             id: "description",
             label: "Description",
             type: "text",
-            content: product.description,
+            content: '',
         },
         ...dynamicSections,
         {
@@ -90,16 +101,16 @@ export default function ProductDetails({ product, properties }: Props) {
                     <span>/</span>
                     <Link href="/" className="hover:text-obsidian transition-colors">Products</Link>
                     <span>/</span>
-                    <span className="text-obsidian">{product.name}</span>
+                    <span className="text-obsidian">{variant.name}</span>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-20">
                     {/* Images */}
                     <div className="flex gap-4 h-[40dvh] md:h-[50dvh] lg:h-[100vh] max-h-[600px]">
                         {/* Thumbnails */}
-                        {product.images.length > 0 && (
+                        {variant.images.length > 0 && (
                             <div className="flex flex-col gap-3 w-16 flex-shrink-0 h-full">
-                                {product.images.map((img, i) => (
+                                {variant.images.map((img, i) => (
                                     <button
                                         key={i}
                                         onClick={() => setSelectedImage(i)}
@@ -122,13 +133,35 @@ export default function ProductDetails({ product, properties }: Props) {
                                     transition={{ duration: 0.3 }}
                                     className="absolute inset-0"
                                 >
-                                    <Image
-                                        src={product.images[selectedImage]}
-                                        alt={product.name}
-                                        fill
-                                        className="object-cover"
-                                        priority
-                                    />
+                                    {
+                                        variant.images[selectedImage] ? (
+                                            <Image
+                                                src={variant.images[selectedImage]}
+                                                alt={variant.name}
+                                                fill
+                                                className="object-cover"
+                                                priority
+                                            />
+                                        ) : (
+                                            <div className="absolute inset-0 flex flex-col items-center justify-center p-4 sm:p-6 select-none animate-pulse">
+                                                <div className="text-obsidian/30 mb-2">
+                                                    <ImageOff
+                                                        className="w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24"
+                                                        strokeWidth={1}
+                                                    />
+                                                </div>
+
+                                                <div className="text-center">
+                                                    <h2 className="text-lg sm:text-xl md:text-2xl font-light uppercase tracking-widest text-obsidian/50">
+                                                        Image
+                                                    </h2>
+                                                    <p className="mt-1 text-[10px] sm:text-xs uppercase border-t border-obsidian/30 text-obsidian/40">
+                                                        Not Available
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )
+                                    }
                                 </motion.div>
                             </AnimatePresence>
 
@@ -149,7 +182,7 @@ export default function ProductDetails({ product, properties }: Props) {
                                 Akshat Namkeen
                             </p>
                             <h1 className="font-display text-4xl font-medium text-obsidian mb-4">
-                                {product.name}
+                                {variant.name}
                             </h1>
 
                             {/* Rating */}
@@ -174,16 +207,16 @@ export default function ProductDetails({ product, properties }: Props) {
                             {/* Price */}
                             <div className="flex items-center gap-4 mb-8">
                                 <span className="font-display text-3xl font-medium text-obsidian">
-                                    {formatPrice(product.price)}
+                                    {formatPrice(variant.price)}
                                 </span>
-                                {product.price && (
+                                {variant.price && (
                                     <span className="text-lg text-obsidian/40 line-through">
-                                        {formatPrice(product.price + 50)}
+                                        {formatPrice(variant.price + 50)}
                                     </span>
                                 )}
-                                {product.price && (
+                                {variant.price && (
                                     <span className="px-3 py-1 bg-brand-100 text-brand-700 text-sm font-medium rounded-full">
-                                        Save {formatPrice(product.price + 50 - product.price)}
+                                        Save {formatPrice(variant.price + 50 - variant.price)}
                                     </span>
                                 )}
                             </div>

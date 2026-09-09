@@ -157,3 +157,32 @@
 		scrollbar-width: none;
 	}
 }
+
+.cn-toast {
+	border-radius: 9999px;
+	font-weight: 500;
+}
+
+.cn-toast-success {
+	background: #111827 !important;
+	color: white !important;
+	border: 1px solid #374151 !important;
+}
+
+.cn-toast-error {
+	background: #fb2d2d !important;
+	color: white !important;
+	border: 1px solid #991b1b !important;
+}
+
+.cn-toast-warning {
+	background: #fef3c7 !important;
+	color: #92400e !important;
+	border: 1px solid #f59e0b !important;
+}
+
+.cn-toast-info {
+	background: #111827 !important;
+	color: white !important;
+	border: 1px solid #374151 !important;
+}

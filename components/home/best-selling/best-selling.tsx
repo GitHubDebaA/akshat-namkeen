@@ -16,9 +16,11 @@ export default function BestSelling({ products }: Props) {
         const data = [...products];
         switch (sortBy) {
             case "low to high":
-                return data.sort((a, b) => a.price - b.price);
+                // return data.sort((a, b) => a.price - b.price);
+                return data;
             case "high to low":
-                return data.sort((a, b) => b.price - a.price);
+                // return data.sort((a, b) => b.price - a.price);
+                return data;
             default:
                 return data;
         }
@@ -63,9 +65,9 @@ export default function BestSelling({ products }: Props) {
 
             {/* Section @@Best Selling Product Grid */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-                {sortedProducts.map((product) => (
+                {/* {sortedProducts.map((product) => (
                     <ProductCard key={product.id} product={product} />
-                ))}
+                ))} */}
 
                 {/* Section @@View all action */}
                 <div className="flex flex-col items-center justify-center gap-2">

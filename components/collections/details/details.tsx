@@ -203,10 +203,10 @@ export default async function CollectionDetails({ slug }: Props) {
                     {collection.items.length > 0 ? (
                         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6 lg:gap-8">
                             {collection.items.map((item) => (
-                                <ProductCard
-                                    key={item.id}
-                                    product={item.variant}
-                                />
+                                // <ProductCard
+                                //     key={item.id}
+                                //     product={item.variant}
+                                // />
                             ))}
                         </div>
                     ) : (

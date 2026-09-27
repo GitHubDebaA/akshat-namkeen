@@ -13,6 +13,20 @@ export function formatPrice(price: number): string {
 	}).format(price);
 }
 
+export function formatDate(value: string | Date | number): string {
+	const date = new Date(value);
+	if (isNaN(date.getTime())) return '';
+
+	return new Intl.DateTimeFormat('en-IN', {
+		day: '2-digit',
+		month: '2-digit',
+		year: 'numeric',
+		hour: '2-digit',
+		minute: '2-digit',
+		hour12: true
+	}).format(date).toLowerCase();
+}
+
 export function maskEmail(email: string): string {
 	if (!email || !email.includes('@')) return email;
 

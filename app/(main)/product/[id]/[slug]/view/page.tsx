@@ -55,9 +55,6 @@ export default async function ProductViewPage({ params, searchParams }: ProductP
         notFound();
     }
 
-    const productVariant =
-        product.variants.find((v) => v.id === variantId) ??
-        product.variants[0];
-
-    return <ProductDetails variant={productVariant} />;
+    const productVariant = product.variants.find((v) => v.id === variantId) ?? product.variants[0];
+    return <ProductDetails variant={productVariant} variants={product.variants} />;
 }

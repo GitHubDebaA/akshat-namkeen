@@ -6,20 +6,19 @@ type ProductVariant = Prisma.ProductVariantGetPayload<{
     };
 }>;
 
-import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Heart, ImageOff, Minus, Plus, ShoppingBag, Star } from "lucide-react";
+import { ImageOff, Minus, Plus, ShoppingBag, Star } from "lucide-react";
 import { formatPrice, slugify } from "@/lib/utils";
 import { useCart } from "@/store/cart";
 import { toast } from "sonner"
 import { Button } from "../ui/button";
+import WishlistButton from "../wishlist/wishlist-button";
 
-const ProductCard = ({ variant }: { variant : ProductVariant }) => {
+const ProductCard = ({ variant }: { variant: ProductVariant }) => {
     console.log("Product variant data:", variant); // Debugging line to check the product data
-    const [wished, setWished] = useState(false);
-    const { addItem, items, updateQuantity } = useCart();
+    const { items} = useCart();
 
     const cartItem = items.find((item) => item.product.id === variant.productId);
     const quantity = cartItem?.quantity ?? 0;
@@ -104,21 +103,9 @@ const ProductCard = ({ variant }: { variant : ProductVariant }) => {
                     </div> */}
 
                     {/* Wishlist */}
-                    <button
-                        onClick={(e) => {
-                            e.preventDefault();
-                            setWished(!wished);
-                        }}
-                        className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-md shadow-md transition hover:scale-110"
-                    >
-
-                        <Heart
-                            className={`w-4 h-4 transition-colors ${wished
-                                ? "fill-red-500 text-red-500"
-                                : "text-obsidian/60"
-                                }`}
-                        />
-                    </button>
+                    <div className="absolute right-3 top-3 z-10">
+                        <WishlistButton variantId={variant.id} />
+                    </div>
 
                     {/* Floating Add to Cart */}
                     <div className="absolute bottom-3 left-3 right-3">

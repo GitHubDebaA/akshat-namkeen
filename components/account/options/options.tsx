@@ -86,13 +86,12 @@ export default function AccountOptions() {
     ]
 
     const handleOptionsActions = (id: string) => {
+        closeAccountOptions();
         switch (id) {
             case "cart":
-                closeAccountOptions();
                 openCart();
                 break;
             case "address":
-                closeAccountOptions();
                 openAddressOptions();
                 break;
         }
@@ -176,10 +175,11 @@ export default function AccountOptions() {
                                                     <Link
                                                         key={option.id}
                                                         href={option.href}
+                                                        onClick={() => handleOptionsActions(option.id)}
                                                         className="group flex items-center justify-between px-4 py-4 transition-all duration-200 hover:bg-brand-50 active:scale-[0.98]"
                                                     >
                                                         {content}
-                                                    </Link>
+                                                    </Link> 
                                                 );
                                             }
                                             return (

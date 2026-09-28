@@ -24,7 +24,7 @@ export default function ShopByCateogry() {
 
             <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
                 {categories.map((category) => (
-                    <Link href={`/products/category/${category.value}`} key={category.label} className="group cursor-pointer last:max-md:col-span-2">
+                    <Link href={`/product/category/${category.value}`} key={category.label} className="group cursor-pointer last:max-md:col-span-2">
                         <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-brand-100 mb-1 group-last:max-md:aspect-video">
                             <Image
                                 src={category.image}

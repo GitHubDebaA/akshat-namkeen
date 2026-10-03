@@ -12,7 +12,6 @@ export default async function ProductByCategory({ params }: ProductByCategoryPro
     const { slug } = await params;
 
     const products = await getProductsByCategory(slug);
-    const categories = await getCategory();
     console.log('products ', products);
 
     return (

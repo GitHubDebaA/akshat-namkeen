@@ -9,6 +9,9 @@ export async function getProductsByCategory(slug: string) {
                 isActive: true
             }
         },
+        include: {
+            variants: true,
+        },
         orderBy: {
             name: "asc",
         }

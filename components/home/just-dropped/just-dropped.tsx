@@ -8,9 +8,16 @@ export default async function JustDropped() {
         return null;
     }
 
-    const limitedItems = collection.items.slice(0, 5).map(item => ({
-        product: item.product,
+    const limitedItems = collection.items.slice(0, 5).map((item) => ({
         variantId: item.variant.id,
+        product: {
+            ...item.product,
+            variants: item.product.variants.map((variant) => ({
+                ...variant,
+                mrp: Number(variant.mrp),
+                sellingPrice: Number(variant.sellingPrice),
+            })),
+        },
     }));
 
     return (

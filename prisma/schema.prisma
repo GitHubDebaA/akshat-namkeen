@@ -110,7 +110,9 @@ model ProductVariant {
   productId String
   name      String @unique
   variant   String
-  price     Float
+
+  mrp           Decimal   @db.Decimal(10, 2)
+  sellingPrice  Decimal   @db.Decimal(10, 2)
 
   displayURL String
   images     String[]

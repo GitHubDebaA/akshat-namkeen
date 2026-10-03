@@ -7,10 +7,19 @@ export default async function Featured() {
         return null;
     }
 
+    const items = collection.items.map((item) => ({
+        variantId: item.variant.id,
+        product: {
+            ...item.product,
+            variants: item.product.variants.map((variant) => ({
+                ...variant,
+                mrp: Number(variant.mrp),
+                sellingPrice: Number(variant.sellingPrice),
+            })),
+        },
+    }));
+
     return (
-        <FeaturedContent items={collection.items.map(item => ({
-            product: item.product,
-            variantId: item.variant.id,
-        }))} />
+        <FeaturedContent items={items} />
     );
 }

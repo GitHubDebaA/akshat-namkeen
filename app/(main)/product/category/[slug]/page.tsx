@@ -1,5 +1,4 @@
 import ProductList from "@/components/products/list";
-import { getCategory } from "@/lib/data/category";
 import { getProductsByCategory } from "@/lib/data/product";
 
 interface ProductByCategoryProps {

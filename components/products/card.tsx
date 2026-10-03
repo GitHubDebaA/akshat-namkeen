@@ -1,11 +1,5 @@
 "use client"
-import { Prisma } from "@prisma/client";
-
-type ProductWithVariants = Prisma.ProductGetPayload<{
-    include: {
-        variants: true;
-    };
-}>;
+import type { ProductWithVariants } from "@/types/product";
 
 type ProductCardProps = {
     product: ProductWithVariants;
@@ -18,15 +12,16 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ImageOff, Minus, Plus, ShoppingBag, Star } from "lucide-react";
+import { ImageOff, Minus, Plus, ShoppingBag, Star, StarIcon } from "lucide-react";
 import { formatPrice, slugify } from "@/lib/utils";
 import { useCart } from "@/store/cart";
-import { toast } from "sonner"
+import { toast } from "sonner";
 import WishlistButton from "../wishlist/wishlist-button";
 
 import { Button } from "../ui/button";
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "../ui/drawer";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 const ProductCard = ({ product, variantId, variantPicker = false, onVariantSelect }: ProductCardProps) => {
     const [isVariantDrawerOpen, setIsVariantDrawerOpen] = useState(false);
@@ -40,10 +35,10 @@ const ProductCard = ({ product, variantId, variantPicker = false, onVariantSelec
         (item) => item.productId === product.id
     );
 
-    const cartVariant = cartProductItems.length === 1 ? cartProductItems[0] : undefined;
 
-    const effectiveVariantId = selectedVariantId ??
-        cartVariant?.variantId ??
+    const cartVariant = cartProductItems.length > 0 ? cartProductItems[0] : undefined;
+
+    const effectiveVariantId = cartVariant?.variantId ?? selectedVariantId ??
         product.variants.find((variant) => variant.isDefault && variant.isActive)?.id ??
         product.variants.find((variant) => variant.isActive)?.id;
 
@@ -79,7 +74,7 @@ const ProductCard = ({ product, variantId, variantPicker = false, onVariantSelec
             productId: product.id,
             productName: product.name,
             variantName: variant.name,
-            price: variant.price,
+            price: variant.sellingPrice,
             displayURL: variant.displayURL || null,
         });
 
@@ -303,26 +298,39 @@ const ProductCard = ({ product, variantId, variantPicker = false, onVariantSelec
                         Akshat Namkeen
                     </p>
                     <Link href={`/product/${product.id}/${slugify(product.name)}/view`}>
-                        <h3 className="text-sm font-medium text-obsidian line-clamp-1">
-                            {product.name}
-                        </h3>
-                    </Link>
-                    <div className="text-xs text-obsidian/30">
-                        {selectedVariant.variant}
-                    </div>
-                    <div className="flex items-center gap-1.5 mt-1">
-                        <div className="flex gap-0.5">
-                            {Array(5).fill(0).map((_, i) => (
-                                <Star
-                                    key={i}
-                                    className={`w-2.5 h-2.5 ${i < 3 ? "fill-brand-400 text-brand-400" : "text-brand-200"}`}
-                                />
-                            ))}
+                        <div className="flex items-center justify-between gap-5 text-sm font-semibold text-obsidian line-clamp-1">
+                            <div>
+                                {product.name}
+                            </div>
+                            <div>
+                                {formatPrice(selectedVariant.sellingPrice)}
+                            </div>
                         </div>
-                        <span className="text-[10px] text-obsidian/50">(100)</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-obsidian">{formatPrice(selectedVariant.price)}</span>
+                    </Link>
+                    <div className="flex items-center justify-between gap-5 text-xs text-obsidian/70 line-clamp-1">
+                        <div>
+                            {selectedVariant.variant}
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                            <Tooltip>
+                                <TooltipTrigger>
+                                    <div className="flex gap-0.5">
+                                        {Array(5).fill(0).map((_, i) => (
+                                            <Star
+                                                key={i}
+                                                className={`w-2.5 h-2.5 ${i < 3 ? "fill-project_primary text-project_primary" : "text-obsidian/70"}`}
+                                            />
+                                        ))}
+                                    </div>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p className="flex items-center justify-center gap-1 text-center text-sm text-ivory">
+                                        <StarIcon className="h-3 w-3 shrink-0 fill-ivory text-ivory" />
+                                        <span>4.3 (100)</span>
+                                    </p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </div>
                     </div>
                 </div>
             </motion.div >

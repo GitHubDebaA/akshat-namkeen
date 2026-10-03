@@ -39,8 +39,8 @@ export default function JustDroppedContent({ items }: Props) {
                         );
 
                         return (
-                            (variantA?.price ?? 0) -
-                            (variantB?.price ?? 0)
+                            (Number(variantA?.sellingPrice) ?? 0) -
+                            (Number(variantB?.sellingPrice) ?? 0)
                         );
                     }
                 );
@@ -57,8 +57,8 @@ export default function JustDroppedContent({ items }: Props) {
                         );
 
                         return (
-                            (variantB?.price ?? 0) -
-                            (variantA?.price ?? 0)
+                            (Number(variantB?.sellingPrice) ?? 0) -
+                            (Number(variantA?.sellingPrice) ?? 0)
                         );
                     }
                 );

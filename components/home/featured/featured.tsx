@@ -8,6 +8,9 @@ export default async function Featured() {
     }
 
     return (
-        <FeaturedContent variant={collection.items.map(item => item.variant)} />
+        <FeaturedContent items={collection.items.map(item => ({
+            product: item.product,
+            variantId: item.variant.id,
+        }))} />
     );
 }

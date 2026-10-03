@@ -1,23 +1,16 @@
-import { Prisma } from "@prisma/client";
-import { ProductVariant } from "@prisma/client";
 import ProductCard from "@/components/products/card";
 
-type ProductVariantWithProduct = Prisma.ProductVariantGetPayload<{
-    include: {
-        product: true;
-        properties: {
-            orderBy: {
-                order: "asc";
-            };
-        };
-    };
-}>;
+type JustDroppedItem = {
+    product: Parameters<typeof ProductCard>[0]["product"];
+    variantId: string;
+};
 
 interface Props {
-    variant: ProductVariantWithProduct[];
+    items: JustDroppedItem[];
 }
 
-export default function FeaturedContent({ variant }: Props) {
+
+export default function FeaturedContent({ items }: Props) {
     return (
         <section className="overflow-hidden">
 
@@ -43,12 +36,12 @@ export default function FeaturedContent({ variant }: Props) {
 
             {/* HORIZONTAL FASHION CAROUSEL COMPONENT */}
             <div className="flex gap-6 overflow-x-auto pb-6 pt-2 px-4 md:pl-[calc((100vw-80rem)/2+1rem)] scrollbar-none snap-x snap-mandatory">
-                {variant.map((productVariant) => (
+                {items.map((item) => (
                     <div
-                        key={productVariant.id}
+                        key={item.variantId}
                         className="w-[200px] flex-shrink-0 snap-start group cursor-pointer flex flex-col justify-between"
                     >
-                        <ProductCard key={productVariant.id} variant={productVariant} />
+                        <ProductCard product={item.product} variantId={item.variantId} />
                     </div>
                 ))}
             </div>

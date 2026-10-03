@@ -15,9 +15,7 @@ import Image from 'next/image';
 import { Button } from '../ui/button';
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerTrigger } from '../ui/drawer';
 
-const CATEGORIES = ["Mixture", "Spicy Snacks", "Salted Snacks", "Corn Snacks", "Bhujia"];
-
-export default function ProductList({ products }: { products: Product[] }) {
+export default async function ProductList({ products }: { products: Product[] }) {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState<string[]>([]);
     const [sortBy, setSortBy] = useState("relevance");
@@ -133,7 +131,7 @@ export default function ProductList({ products }: { products: Product[] }) {
                         </h3>
 
                         <div className="space-y-2">
-                            {CATEGORIES.map(category => (
+                            {categories.map(category => (
                                 <label key={category} className="flex items-center gap-2 text-sm">
                                     <input type="checkbox" value={category} onChange={HandleChangeCategory} />
                                     {category}

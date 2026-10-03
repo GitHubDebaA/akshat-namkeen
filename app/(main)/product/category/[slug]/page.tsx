@@ -1,17 +1,19 @@
 import ProductList from "@/components/products/list";
-import prisma from "@/lib/prisma";
+import { getCategory } from "@/lib/data/category";
+import { getProductsByCategory } from "@/lib/data/product";
 
-export default async function ProductByCategory({ params }: { params: Promise<{ slug: string }>; }) {
+interface ProductByCategoryProps {
+    params: Promise<{
+        slug: string;
+    }>;
+}
+
+export default async function ProductByCategory({ params }: ProductByCategoryProps ) {
     const { slug } = await params;
 
-    const products = await prisma.product.findMany({
-        where: {
-            isActive: true,
-        },
-        orderBy: {
-            name: "asc",
-        }
-    });
+    const products = await getProductsByCategory(slug);
+    const categories = await getCategory();
+    console.log('products ', products);
 
     return (
         <div className="space-y-6 md:space-y-12">

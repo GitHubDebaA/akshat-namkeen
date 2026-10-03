@@ -49,6 +49,7 @@ export default function ProductDetails({ variant, variants }: Props) {
     const [quantity, setQuantity] = useState(1);
     const [added, setAdded] = useState(false);
     const [openTab, setOpenTab] = useState<string | null>("description");
+    const images = [variant.displayURL, ...variant.images];
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -106,7 +107,7 @@ export default function ProductDetails({ variant, variants }: Props) {
 
     return (
         <div className="min-h-screen">
-            <div className="max-w-7xl mx-auto px-4 lg:px-8 py-4 lg:py-8">
+            <div className="max-w-screen-2xl mx-auto px-4 lg:px-8 py-4 lg:py-8">
                 {/* Breadcrumb */}
                 <div className="flex items-center gap-2 text-xs text-obsidian/50 mb-8">
                     <Link href="/" className="hover:text-obsidian transition-colors">Home</Link>
@@ -131,12 +132,12 @@ export default function ProductDetails({ variant, variants }: Props) {
                                         transition={{ duration: 0.25 }}
                                         className="absolute inset-0"
                                     >
-                                        {variant.images[selectedImage] ? (
+                                        {images[selectedImage] ? (
                                             <Image
-                                                src={variant.images[selectedImage]}
+                                                src={images[selectedImage]}
                                                 alt={variant.name}
                                                 fill
-                                                className="object-contain"
+                                                className={`${images[selectedImage] === variant.displayURL ? 'object-cover' : "object-contain"}`}
                                                 priority
                                                 sizes="(max-width: 1024px) 100vw, 50vw"
                                             />
@@ -170,10 +171,10 @@ export default function ProductDetails({ variant, variants }: Props) {
                             </div>
 
                             {/* Thumbnails */}
-                            {variant.images.length > 0 && (
+                            {images.length > 0 && (
                                 <div className="flex-shrink-0 mt-4">
                                     <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-none">
-                                        {variant.images.map((img, i) => (
+                                        {images.map((img, i) => (
                                             <button
                                                 key={i}
                                                 type="button"

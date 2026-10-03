@@ -1,26 +1,36 @@
 "use client";
 
-import { Product } from "@prisma/client";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export type CartItem = {
-    product: Product;
+    variantId: string;
+    productId: string;
+
+    productName: string;
+    variantName: string;
+
+    price: number;
+    displayURL?: string | null;
+
     quantity: number;
-    selectedColor?: string;
-    selectedSize?: string;
 };
 
 type CartStore = {
     items: CartItem[];
+
     isOpen: boolean;
-    addItem: (product: Product, quantity?: number, color?: string, size?: string) => void;
-    removeItem: (productId: string) => void;
-    updateQuantity: (productId: string, quantity: number) => void;
+
+    addItem: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
+    removeItem: (variantId: string) => void;
+    updateQuantity: (variantId: string, quantity: number) => void;
+
     clearCart: () => void;
+
     openCart: () => void;
     closeCart: () => void;
     toggleCart: () => void;
+
     total: () => number;
     itemCount: () => number;
 };
@@ -31,49 +41,98 @@ export const useCart = create<CartStore>()(
             items: [],
             isOpen: false,
 
-            addItem: (product, quantity = 1, color, size) => {
-                const existing = get().items.find((i) => i.product.id === product.id);
+            addItem: (item, quantity = 1) => {
+                const existing = get().items.find(
+                    (i) => i.variantId === item.variantId
+                );
+
                 if (existing) {
                     set((state) => ({
                         items: state.items.map((i) =>
-                            i.product.id === product.id
-                                ? { ...i, quantity: i.quantity + quantity }
+                            i.variantId === item.variantId
+                                ? {
+                                    ...i,
+                                    quantity: i.quantity + quantity,
+                                }
                                 : i
                         ),
-                        // isOpen: true,
                     }));
-                } else {
-                    set((state) => ({
-                        items: [...state.items, { product, quantity, selectedColor: color, selectedSize: size }],
-                        // isOpen: true,
-                    }));
-                }
-            },
 
-            removeItem: (productId) =>
-                set((state) => ({ items: state.items.filter((i) => i.product.id !== productId) })),
-
-            updateQuantity: (productId, quantity) => {
-                if (quantity <= 0) {
-                    get().removeItem(productId);
                     return;
                 }
+
                 set((state) => ({
-                    items: state.items.map((i) =>
-                        i.product.id === productId ? { ...i, quantity } : i
+                    items: [
+                        ...state.items,
+                        {
+                            ...item,
+                            quantity,
+                        },
+                    ],
+                }));
+            },
+
+            removeItem: (variantId) =>
+                set((state) => ({
+                    items: state.items.filter(
+                        (item) => item.variantId !== variantId
+                    ),
+                })),
+
+            updateQuantity: (variantId, quantity) => {
+                if (quantity <= 0) {
+                    get().removeItem(variantId);
+                    return;
+                }
+
+                set((state) => ({
+                    items: state.items.map((item) =>
+                        item.variantId === variantId
+                            ? {
+                                ...item,
+                                quantity,
+                            }
+                            : item
                     ),
                 }));
             },
 
-            clearCart: () => set({ items: [] }),
-            openCart: () => set({ isOpen: true }),
-            closeCart: () => set({ isOpen: false }),
-            toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
+            clearCart: () =>
+                set({
+                    items: [],
+                }),
 
-            // total: () => get().items.reduce((sum, i) => sum + i.product.price * i.quantity, 0),
-            total: () => get().items.reduce((sum, i) => sum + 1 * i.quantity, 0),
-            itemCount: () => get().items.reduce((sum, i) => sum + i.quantity, 0),
+            openCart: () =>
+                set({
+                    isOpen: true,
+                }),
+
+            closeCart: () =>
+                set({
+                    isOpen: false,
+                }),
+
+            toggleCart: () =>
+                set((state) => ({
+                    isOpen: !state.isOpen,
+                })),
+
+            total: () =>
+                get().items.reduce(
+                    (sum, item) =>
+                        sum + item.price * item.quantity,
+                    0
+                ),
+
+            itemCount: () =>
+                get().items.reduce(
+                    (sum, item) =>
+                        sum + item.quantity,
+                    0
+                ),
         }),
-        { name: "akshat-namkeen-cart" }
+        {
+            name: "akshat-namkeen-cart",
+        }
     )
 );

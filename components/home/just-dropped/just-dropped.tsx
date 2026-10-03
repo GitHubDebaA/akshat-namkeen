@@ -3,14 +3,17 @@ import JustDroppedContent from "./content";
 
 export default async function JustDropped() {
     const collection = await getCollection("new-arrivals");
-    console.log("Collection Data:", collection); // Debugging line to check the fetched data
 
     if (!collection) {
         return null;
     }
 
-    const limitedProducts = collection.items.slice(0, 5).map(item => item.variant);
+    const limitedItems = collection.items.slice(0, 5).map(item => ({
+        product: item.product,
+        variantId: item.variant.id,
+    }));
+
     return (
-        <JustDroppedContent variant={limitedProducts} />
+        <JustDroppedContent items={limitedItems} />
     );
 }

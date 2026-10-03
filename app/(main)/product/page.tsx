@@ -6,10 +6,14 @@ export default async function ViewAllProducts() {
         where: {
             isActive: true,
         },
+        include: {
+            variants: true,
+        },
         orderBy: {
             name: "asc",
-        }
+        },
     });
+
     return (
         <div className="space-y-6 md:space-y-12">
             <ProductList products={products} />

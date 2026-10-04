@@ -11,7 +11,7 @@ import {
     Settings2,
 } from "lucide-react";
 
-import ProductCard from "./card";
+// import ProductCard from "./card";
 
 import {
     InputGroup,
@@ -129,13 +129,13 @@ export default function ProductList({ products }: ProductListProps) {
                     const priceA = Math.min(
                         ...a.variants
                             .filter((variant) => variant.isActive)
-                            .map((variant) => variant.price)
+                            .map((variant) => Number(variant.sellingPrice))
                     );
 
                     const priceB = Math.min(
                         ...b.variants
                             .filter((variant) => variant.isActive)
-                            .map((variant) => variant.price)
+                            .map((variant) => Number(variant.sellingPrice))
                     );
 
                     return priceA - priceB;
@@ -146,13 +146,13 @@ export default function ProductList({ products }: ProductListProps) {
                     const priceA = Math.min(
                         ...a.variants
                             .filter((variant) => variant.isActive)
-                            .map((variant) => variant.price)
+                            .map((variant) => Number(variant.sellingPrice))
                     );
 
                     const priceB = Math.min(
                         ...b.variants
                             .filter((variant) => variant.isActive)
-                            .map((variant) => variant.price)
+                            .map((variant) => Number(variant.sellingPrice))
                     );
 
                     return priceB - priceA;
@@ -324,10 +324,13 @@ export default function ProductList({ products }: ProductListProps) {
                     {filteredProducts.length > 0 ? (
                         <div className="px-6 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
                             {filteredProducts.map((product) => (
-                                <ProductCard
-                                    key={product.id}
-                                    product={product}
-                                />
+                                <div key={product.id} className="border p-4 rounded-lg">
+                                    Product Card {product.name} - {product.id}
+                                </div>
+                                // <ProductCard
+                                //     key={product.id}
+                                //     product={product}
+                                // />
                             ))}
                         </div>
                     ) : (
@@ -340,8 +343,8 @@ export default function ProductList({ products }: ProductListProps) {
             <div className="md:hidden space-y-6">
                 <div
                     className={`px-6 pt-6 space-y-1 sticky top-15 h-fit self-start z-10 bg-white transition-all duration-300 ${isSticky
-                            ? "pb-6 shadow-[0_8px_30px_rgba(0,0,0,0.08)] border-b border-black/5"
-                            : ""
+                        ? "pb-6 shadow-[0_8px_30px_rgba(0,0,0,0.08)] border-b border-black/5"
+                        : ""
                         }`}
                 >
                     <Breadcrumb className="text-sm">
@@ -537,10 +540,13 @@ export default function ProductList({ products }: ProductListProps) {
                 {filteredProducts.length > 0 ? (
                     <div className="px-6 grid grid-cols-2 gap-6">
                         {filteredProducts.map((product) => (
-                            <ProductCard
-                                key={product.id}
-                                product={product}
-                            />
+                            <div key={product.id} className="border p-4 rounded-lg">
+                                Product Card {product.name} - {product.id}
+                            </div>
+                            // <ProductCard
+                            //     key={product.id}
+                            //     product={product}
+                            // />
                         ))}
                     </div>
                 ) : (

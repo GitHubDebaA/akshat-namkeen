@@ -4,9 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, ShoppingBag, ChevronDown, Check, ImageOff, Minus, Plus } from "lucide-react";
+import { Star, ShoppingBag, ChevronDown, ImageOff, Minus, Plus, Zap } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
-import { Button } from "../ui/button"
+import { Button } from "../ui/button";
 
 import { Prisma } from "@prisma/client";
 import { ProductProperty } from "@prisma/client";
@@ -50,6 +50,10 @@ export default function ProductDetails({ variant, variants }: Props) {
     const [added, setAdded] = useState(false);
     const [openTab, setOpenTab] = useState<string | null>("description");
     const images = [variant.displayURL, ...variant.images];
+
+    const mrp = Number(variant.mrp);
+    const sellingPrice = Number(variant.sellingPrice);
+    const discountPercentage = mrp && mrp > sellingPrice ? Math.round(((mrp - sellingPrice) / mrp) * 100) : 0;
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -165,8 +169,13 @@ export default function ProductDetails({ variant, variants }: Props) {
                                 </AnimatePresence>
 
                                 {/* Badge */}
-                                <div className="absolute top-3 left-3 z-10 px-2.5 py-1 bg-obsidian text-ivory text-[10px] font-semibold tracking-widest uppercase rounded-full">
+                                {/* <div className="absolute top-3 left-3 z-10 px-2.5 py-1 bg-obsidian text-ivory text-[10px] font-semibold tracking-widest uppercase rounded-full">
                                     New Arrival
+                                </div> */}
+
+                                {/* Wishlist */}
+                                <div className="absolute top-1 right-1 z-10">
+                                    <WishlistButton variantId={variant.id} size="sm" />
                                 </div>
                             </div>
 
@@ -237,16 +246,20 @@ export default function ProductDetails({ variant, variants }: Props) {
 
                             {/* Price */}
                             <div className="flex items-center gap-2">
-                                <span className="text-lg text-project_primary">-66%</span>
+                                <span className="text-lg text-project_primary">
+                                    -{discountPercentage}%
+                                </span>
                                 <span className="font-display text-2xl font-medium text-obsidian">
                                     {formatPrice(Number(variant.sellingPrice))}
                                 </span>
                             </div>
                             <div className="text-xs text-obsidian-400">
-                                <span>M.R.P.: </span>
                                 {variant.mrp && (
-                                    <span className="line-through">
-                                        {formatPrice(Number(variant.mrp))}
+                                    <span>
+                                        <span>M.R.P.: </span>
+                                        <span className="line-through">
+                                            {formatPrice(Number(variant.mrp))}
+                                        </span>
                                     </span>
                                 )}
                             </div>
@@ -331,25 +344,27 @@ export default function ProductDetails({ variant, variants }: Props) {
                             )} */}
 
                             {/* Quantity + CTA */}
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-6">
+                            <div className="grid grid-cols-[132px_48px_minmax(0,1fr)] md:grid-cols-3 gap-2 md:gap-3 mb-6">
                                 {/* Quantity */}
-                                <div className="h-12 flex overflow-hidden rounded-full bg-obsidian text-white shadow-lg">
+                                <div className="h-11 w-[132px] md:w-full flex shrink-0 overflow-hidden rounded-full bg-obsidian text-white shadow-lg">
                                     <button
                                         type="button"
                                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                        className="flex-1 flex items-center justify-center border-r border-white/10 transition-all duration-200 hover:bg-white/10 active:bg-white/20 active:scale-95"
+                                        className="flex-1 flex items-center justify-center border-r border-white/30 transition-all duration-200 hover:bg-white/10 active:bg-white/20 active:scale-95"
+                                        aria-label="Decrease quantity"
                                     >
                                         <Minus className="h-4 w-4" />
                                     </button>
 
-                                    <div className="w-12 flex items-center justify-center font-semibold text-sm">
+                                    <div className="w-11 md:flex-1 flex shrink-0 items-center justify-center font-semibold text-sm">
                                         {quantity}
                                     </div>
 
                                     <button
                                         type="button"
                                         onClick={() => setQuantity(quantity + 1)}
-                                        className="flex-1 flex items-center justify-center border-l border-white/10 transition-all duration-200 hover:bg-project_primary/90 active:bg-project_primary active:scale-95"
+                                        className="flex-1 flex items-center justify-center border-l border-white/30 transition-all duration-200 hover:bg-project_primary/90 active:bg-project_primary active:scale-95"
+                                        aria-label="Increase quantity"
                                     >
                                         <Plus className="h-4 w-4" />
                                     </button>
@@ -357,76 +372,25 @@ export default function ProductDetails({ variant, variants }: Props) {
 
                                 {/* Add to Bag */}
                                 <Button
-                                    size="lg"
-                                    className="h-12 w-full rounded-full gap-2 shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 active:scale-[0.98]"
+                                    type="button"
                                     onClick={handleAddToCart}
+                                    aria-label="Add to bag"
+                                    className="h-11 w-11 md:w-full shrink-0 rounded-full gap-2 bg-obsidian text-white shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:bg-obsidian/90 hover:shadow-xl active:translate-y-0 active:scale-[0.97]"
                                 >
-                                    <AnimatePresence mode="wait" initial={false}>
-                                        {added ? (
-                                            <motion.span
-                                                key="added"
-                                                initial={{ opacity: 0, scale: 0.9, y: 4 }}
-                                                animate={{ opacity: 1, scale: 1, y: 0 }}
-                                                exit={{ opacity: 0, scale: 0.9, y: -4 }}
-                                                className="flex items-center gap-2"
-                                            >
-                                                <Check className="w-4 h-4" /> Added to Bag
-                                            </motion.span>
-                                        ) : (
-                                            <motion.span
-                                                key="add"
-                                                initial={{ opacity: 0, scale: 0.9, y: 4 }}
-                                                animate={{ opacity: 1, scale: 1, y: 0 }}
-                                                exit={{ opacity: 0, scale: 0.9, y: -4 }}
-                                                transition={{ duration: 0.18 }}
-                                                className="flex items-center gap-2"
-                                            >
-                                                <ShoppingBag className="w-4 h-4" /> Add to Bag
-                                            </motion.span>
-                                        )}
-                                    </AnimatePresence>
+                                    <ShoppingBag className="h-4 w-4" />
+                                    <span className="hidden md:inline">Add to Bag</span>
                                 </Button>
 
                                 {/* Buy Now */}
                                 <Button
+                                    type="button"
                                     size="lg"
                                     onClick={handleAddToCart}
-                                    className="h-12 w-full rounded-full gap-2 bg-project_primary text-white shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:bg-project_primary/90 hover:shadow-xl active:translate-y-0 active:scale-[0.98]"
+                                    className="h-11 w-full min-w-0 rounded-full gap-2 bg-project_primary text-white shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:bg-project_primary/90 hover:shadow-xl active:translate-y-0 active:scale-[0.98]"
                                 >
-                                    <AnimatePresence mode="wait" initial={false}>
-                                        {added ? (
-                                            <motion.span
-                                                key="buying"
-                                                initial={{ opacity: 0, scale: 0.9, y: 4 }}
-                                                animate={{ opacity: 1, scale: 1, y: 0 }}
-                                                exit={{ opacity: 0, scale: 0.9, y: -4 }}
-                                                transition={{ duration: 0.18 }}
-                                                className="flex items-center gap-2"
-                                            >
-                                                <Check className="w-4 h-4" />
-                                                Added
-                                            </motion.span>
-                                        ) : (
-                                            <motion.span
-                                                key="buy"
-                                                initial={{ opacity: 0, scale: 0.9, y: 4 }}
-                                                animate={{ opacity: 1, scale: 1, y: 0 }}
-                                                exit={{ opacity: 0, scale: 0.9, y: -4 }}
-                                                transition={{ duration: 0.18 }}
-                                                className="flex items-center gap-2"
-                                            >
-                                                <ShoppingBag className="w-4 h-4" />
-                                                Buy Now
-                                            </motion.span>
-                                        )}
-                                    </AnimatePresence>
+                                    <Zap className="h-4 w-4" />
+                                    <span>Buy Now</span>
                                 </Button>
-
-                                {/* Wishlist */}
-                                <WishlistButton
-                                    variantId={variant.id}
-                                    size="lg"
-                                />
                             </div>
 
                             {/* Benefits */}

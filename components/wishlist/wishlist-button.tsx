@@ -74,7 +74,7 @@ export default function WishlistButton({
                 "bg-obsidian text-white hover:bg-obsidian/90 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-project_primary focus-visible:ring-offset-2",
                 "active:scale-95 disabled:pointer-events-none disabled:opacity-70",
                 sizeClasses[size],
-                wishlisted && "bg-obsidian text-rose-500",
+                wishlisted && "bg-obsidian text-project_primary",
                 className
             )}
             {...props}
@@ -87,7 +87,7 @@ export default function WishlistButton({
                         iconSizeClasses[size],
                         "transition-all duration-300 group-hover:scale-110 active:scale-125",
                         wishlisted
-                            ? "fill-rose-500 text-rose-500 animate-in zoom-in-75 duration-200"
+                            ? "fill-project_primary text-project_primary animate-in zoom-in-75 duration-200"
                             : "fill-none text-current"
                     )}
                     strokeWidth={2}

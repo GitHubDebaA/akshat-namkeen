@@ -154,7 +154,7 @@ const ProductCard = ({ data, variantPicker = false, onVariantSelect }: ProductCa
 
             {/* Wishlist */}
             <div className=" absolute right-1 top-1 z-20">
-                <WishlistButton variantId={selectedVariant.id} initialWishlisted={isWishlisted} />
+                <WishlistButton variantId={selectedVariant.id} initialWishlisted={isWishlisted} size="sm" />
             </div>
 
             {/* Add to cart */}
@@ -224,13 +224,13 @@ const ProductCard = ({ data, variantPicker = false, onVariantSelect }: ProductCa
 
                 {/* Product information */}
                 <div className="py-2">
-                    <div className="flex items-center justify-between gap-5 text-[10px] font-semibold uppercase tracking-widest text-brand-500">
+                    <div className="flex items-center justify-between gap-5 text-[10px] font-semibold uppercase tracking-widest text-project_primary">
                         <p>
                             Akshat Namkeen
                         </p>
                         {
                             selectedVariant.sellingPrice !== selectedVariant.mrp && (
-                                <p className="line-through text-obsidian/20">
+                                <p className="line-through text-obsidian/50">
                                     {formatPrice(selectedVariant.mrp)}
                                 </p>
                             )

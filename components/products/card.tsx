@@ -224,9 +224,18 @@ const ProductCard = ({ data, variantPicker = false, onVariantSelect }: ProductCa
 
                 {/* Product information */}
                 <div className="py-2">
-                    <p className="text-[10px] font-semibold uppercase tracking-widest text-brand-500">
-                        Akshat Namkeen
-                    </p>
+                    <div className="flex items-center justify-between gap-5 text-[10px] font-semibold uppercase tracking-widest text-brand-500">
+                        <p>
+                            Akshat Namkeen
+                        </p>
+                        {
+                            selectedVariant.sellingPrice !== selectedVariant.mrp && (
+                                <p className="line-through text-obsidian/20">
+                                    {formatPrice(selectedVariant.mrp)}
+                                </p>
+                            )
+                        }
+                    </div>
 
                     <Link href={productUrl}>
                         <div className="flex items-center justify-between gap-5 text-sm font-semibold text-obsidian">

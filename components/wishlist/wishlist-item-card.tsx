@@ -88,7 +88,7 @@ export default function WishlistItemCard({
 
                 <div className="mt-3 flex items-center justify-between">
                     <p className="text-base font-semibold text-obsidian">
-                        {formatPrice(variant.price)}
+                        {formatPrice(Number(variant.sellingPrice))}
                     </p>
 
                     {!variant.isActive && (

@@ -1,5 +1,8 @@
 import { getCollection } from "@/lib/data/collection";
+import { mapProductCardData } from "@/lib/mappers/product";
+
 import FeaturedContent from "./content";
+
 export default async function Featured() {
     const collection = await getCollection("new-arrivals");
 
@@ -7,18 +10,12 @@ export default async function Featured() {
         return null;
     }
 
-    const items = collection.items.map((item) => ({
-        variantId: item.variant.id,
-        product: {
-            ...item.product,
-            variants: item.product.variants.map((variant) => ({
-                ...variant,
-                mrp: Number(variant.mrp),
-                sellingPrice: Number(variant.sellingPrice),
-            })),
-        },
-    }));
-
+    const items = collection.items.map((item) =>
+        mapProductCardData(item.product, {
+            variantId: item.variant.id,
+        })
+    );
+    
     return (
         <FeaturedContent items={items} />
     );

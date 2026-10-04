@@ -2,22 +2,16 @@
 
 import { useMemo, useState } from "react";
 import { ChevronRight, MoveDown, MoveUp } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
-import ProductCard from "@/components/products/card";
 import Link from "next/link";
 
-type JustDroppedItem = {
-    product: Parameters<typeof ProductCard>[0]["product"];
-    variantId: string;
-};
+import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+
+import ProductCard from "@/components/products/card";
+import type { ProductCardData } from "@/types/product";
 
 interface Props {
-    items: JustDroppedItem[];
+    items: ProductCardData[];
 }
 
 export default function JustDroppedContent({ items }: Props) {
@@ -31,11 +25,11 @@ export default function JustDroppedContent({ items }: Props) {
                 return data.sort(
                     (a, b) => {
                         const variantA = a.product.variants.find(
-                            (variant) => variant.id === a.variantId
+                            (variant) => variant.id === a.selectedVariantId
                         );
 
                         const variantB = b.product.variants.find(
-                            (variant) => variant.id === b.variantId
+                            (variant) => variant.id === b.selectedVariantId
                         );
 
                         return (
@@ -49,11 +43,11 @@ export default function JustDroppedContent({ items }: Props) {
                 return data.sort(
                     (a, b) => {
                         const variantA = a.product.variants.find(
-                            (variant) => variant.id === a.variantId
+                            (variant) => variant.id === a.selectedVariantId
                         );
 
                         const variantB = b.product.variants.find(
-                            (variant) => variant.id === b.variantId
+                            (variant) => variant.id === b.selectedVariantId
                         );
 
                         return (
@@ -74,9 +68,7 @@ export default function JustDroppedContent({ items }: Props) {
         }
 
         setSortBy(
-            sortBy === "low to high"
-                ? "high to low"
-                : "low to high"
+            sortBy === "low to high" ? "high to low" : "low to high"
         );
     };
 
@@ -136,9 +128,8 @@ export default function JustDroppedContent({ items }: Props) {
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
                 {sortedItems.map((item) => (
                     <ProductCard
-                        key={item.variantId}
-                        product={item.product}
-                        variantId={item.variantId}
+                        key={item.selectedVariantId}
+                        data={item}
                     />
                 ))}
 

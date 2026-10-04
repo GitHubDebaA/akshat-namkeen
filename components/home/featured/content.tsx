@@ -1,14 +1,9 @@
 import ProductCard from "@/components/products/card";
-
-type JustDroppedItem = {
-    product: Parameters<typeof ProductCard>[0]["product"];
-    variantId: string;
-};
+import type { ProductCardData } from "@/types/product";
 
 interface Props {
-    items: JustDroppedItem[];
+    items: ProductCardData[];
 }
-
 
 export default function FeaturedContent({ items }: Props) {
     return (
@@ -38,10 +33,10 @@ export default function FeaturedContent({ items }: Props) {
             <div className="flex gap-6 overflow-x-auto pb-6 pt-2 px-4 md:pl-[calc((100vw-80rem)/2+1rem)] scrollbar-none snap-x snap-mandatory">
                 {items.map((item) => (
                     <div
-                        key={item.variantId}
+                        key={item.selectedVariantId}
                         className="w-[200px] flex-shrink-0 snap-start group cursor-pointer flex flex-col justify-between"
                     >
-                        <ProductCard product={item.product} variantId={item.variantId} />
+                        <ProductCard data={item} />
                     </div>
                 ))}
             </div>

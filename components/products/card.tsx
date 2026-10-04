@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Heart, ImageOff, Minus, Plus, ShoppingBag, Star, StarIcon } from "lucide-react";
+import { ImageOff, Minus, Plus, ShoppingBag, Star, StarIcon } from "lucide-react";
 import { toast } from "sonner";
 
 import type { ProductCardData, ProductVariant } from "@/types/product";
@@ -47,15 +47,6 @@ const ProductCard = ({ data, variantPicker = false, onVariantSelect }: ProductCa
             activeVariants[0]
         );
     }, [activeVariants, selectedVariantId]);
-
-    /*
-     * If the initial variant disappears / changes, make sure we always have a valid variant.
-     */
-    // useEffect(() => {
-    //     if (selectedVariant && selectedVariant.id !== selectedVariantId) {
-    //         setSelectedVariantId(selectedVariant.id);
-    //     }
-    // }, [selectedVariant, selectedVariantId]);
 
     if (!selectedVariant) {
         return null;
@@ -162,66 +153,47 @@ const ProductCard = ({ data, variantPicker = false, onVariantSelect }: ProductCa
                 )}
 
             {/* Wishlist */}
-            <div className=" absolute right-3 top-3 z-20">
+            <div className=" absolute right-1 top-1 z-20">
                 <WishlistButton variantId={selectedVariant.id} initialWishlisted={isWishlisted} />
             </div>
 
             {/* Add to cart */}
             <div className="absolute bottom-3 left-1 right-1">
                 {quantity === 0 ? (
-                    <div className="flex items-center gap-1">
-                        {/* Add to Cart Button */}
-                        <Button
-                            type="button"
-                            onClick={handleAddToCart}
-                            className="group/button relative h-11 flex-1 overflow-hidden rounded-full bg-obsidian text-sm text-white transition-all duration-300 hover:shadow-xl"
-                        >
-                            <span className="absolute inset-0 origin-left scale-x-0 bg-project_primary transition-transform duration-300 group-hover/button:scale-x-100" />
-                            <span className="relative flex items-center justify-center gap-2">
-                                <ShoppingBag className="h-4 w-4" />
-                                Add to Cart
-                            </span>
-                        </Button>
-
-                        {/* Wishlist Button - Perfectly Circular (h-11 w-11) */}
-                        <Button
-                            type="button"
-                            aria-label="Add to Wishlist"
-                            className="group/button relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-obsidian p-0 text-white transition-all duration-300 hover:bg-obsidian/90 hover:shadow-xl"
-                        >
-                            <Heart className="h-4 w-4 transition-transform group-hover/button:scale-110" />
-                        </Button>
-                    </div>
+                    /* Add to Cart Button */
+                    <Button
+                        type="button"
+                        onClick={handleAddToCart}
+                        className="group/button relative h-11 w-full overflow-hidden rounded-full bg-obsidian text-sm text-white transition-all duration-300 hover:shadow-xl"
+                    >
+                        <span className="absolute inset-0 origin-left scale-x-0 bg-project_primary transition-transform duration-300 group-hover/button:scale-x-100" />
+                        <span className="relative flex items-center justify-center gap-2">
+                            <ShoppingBag className="h-4 w-4" />
+                            Add to Cart
+                        </span>
+                    </Button>
                 ) : (
-                    <div className="flex items-center gap-1">
-                        <div className="flex-1 flex h-11 overflow-hidden rounded-full bg-obsidian text-white shadow-xl">
-                            <button
-                                type="button"
-                                onClick={handleDecrease}
-                                className="flex-1 cursor-pointer items-center justify-center border-r border-white/30 transition duration-150 hover:bg-white/10 active:scale-95 active:bg-white/20"
-                            >
-                                <Minus className="mx-auto h-4 w-4" />
-                            </button>
-
-                            <div className="flex w-12 flex-1 items-center justify-center text-sm font-semibold">
-                                {quantity}
-                            </div>
-
-                            <button
-                                type="button"
-                                onClick={handleIncrease}
-                                className="flex-1 cursor-pointer items-center justify-center border-l border-white/30 transition duration-150 hover:bg-project_primary/90 active:scale-95 active:bg-project_primary"
-                            >
-                                <Plus className="mx-auto h-4 w-4" />
-                            </button>
-                        </div>
-                        <Button
+                    /* Quantity Counter Bar */
+                    <div className="flex h-11 overflow-hidden rounded-full bg-obsidian text-white shadow-xl">
+                        <button
                             type="button"
-                            aria-label="Add to Wishlist"
-                            className="group/button relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-obsidian p-0 text-white transition-all duration-300 hover:bg-obsidian/90 hover:shadow-xl"
+                            onClick={handleDecrease}
+                            className="flex-1 cursor-pointer items-center justify-center border-r border-white/30 transition duration-150 hover:bg-white/10 active:scale-95 active:bg-white/20"
                         >
-                            <Heart className="h-4 w-4 transition-transform group-hover/button:scale-110" />
-                        </Button>
+                            <Minus className="mx-auto h-4 w-4" />
+                        </button>
+
+                        <div className="flex-1 flex w-12 items-center justify-center text-sm font-semibold">
+                            {quantity}
+                        </div>
+
+                        <button
+                            type="button"
+                            onClick={handleIncrease}
+                            className="flex-1 cursor-pointer items-center justify-center border-l border-white/30 transition duration-150 hover:bg-project_primary/90 active:scale-95 active:bg-project_primary"
+                        >
+                            <Plus className="mx-auto h-4 w-4" />
+                        </button>
                     </div>
                 )}
             </div>

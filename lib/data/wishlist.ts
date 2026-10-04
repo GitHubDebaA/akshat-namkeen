@@ -33,3 +33,27 @@ export async function getWishlist() {
         },
     });
 }
+
+export async function getWishlistedVariantIds(): Promise<string[]> {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+        return [];
+    }
+
+    const wishlist = await prisma.wishlist.findUnique({
+        where: {
+            userId: session.user.id,
+        },
+
+        select: {
+            items: {
+                select: {
+                    variantId: true,
+                },
+            },
+        },
+    });
+
+    return wishlist?.items.map((item) => item.variantId) ?? [];
+}

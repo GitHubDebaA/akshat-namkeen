@@ -239,14 +239,14 @@ export default function ProductDetails({ variant, variants }: Props) {
                             <div className="flex items-center gap-2">
                                 <span className="text-lg text-project_primary">-66%</span>
                                 <span className="font-display text-2xl font-medium text-obsidian">
-                                    {formatPrice(variant.price)}
+                                    {formatPrice(Number(variant.sellingPrice))}
                                 </span>
                             </div>
                             <div className="text-xs text-obsidian-400">
                                 <span>M.R.P.: </span>
-                                {variant.price && (
+                                {variant.mrp && (
                                     <span className="line-through">
-                                        {formatPrice(variant.price + 50)}
+                                        {formatPrice(Number(variant.mrp))}
                                     </span>
                                 )}
                             </div>

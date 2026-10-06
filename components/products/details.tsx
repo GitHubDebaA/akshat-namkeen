@@ -214,7 +214,7 @@ export default function ProductDetails({ variant, variants }: Props) {
                             transition={{ duration: 0.5 }}
                         >
                             <h1 className="font-display text-4xl font-medium text-obsidian mb-1">
-                                {variant.name}
+                                {variant.product.name}
                             </h1>
                             <p className="text-project_primary text-xs font-semibold tracking-widest uppercase mb-1">
                                 Akshat Namkeen

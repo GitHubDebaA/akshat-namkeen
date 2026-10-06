@@ -34,7 +34,6 @@ const ProductCard = ({ data, variantPicker = false, onVariantSelect }: ProductCa
 
     const { items, addItem, updateQuantity } = useCart();
     const cartVariant = useMemo(() => items.find((item) => item.productId === product.id), [items, product.id]);
-    console.log("cartVariant", cartVariant);
 
     const activeVariants = useMemo(() => product.variants.filter(
         (variant) => variant.isActive
@@ -44,12 +43,12 @@ const ProductCard = ({ data, variantPicker = false, onVariantSelect }: ProductCa
 
     const selectedVariant = useMemo(() => {
         return (
-            activeVariants.find((variant) => variant.id === cartVariant?.variantId) ??
+            activeVariants.find((variant) => variant.id === cartVariant?.variantId && !variantPicker) ??
             activeVariants.find((variant) => variant.id === selectedVariantId) ??
             activeVariants.find((variant) => variant.isDefault) ??
             activeVariants[0]
         );
-    }, [activeVariants, selectedVariantId, cartVariant?.variantId]);
+    }, [activeVariants, selectedVariantId, cartVariant?.variantId, variantPicker]);
 
     if (!selectedVariant) {
         return null;

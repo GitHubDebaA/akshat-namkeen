@@ -4,7 +4,7 @@ import { mapProductCardData } from "@/lib/mappers/product";
 import FeaturedContent from "./content";
 
 export default async function Featured() {
-    const collection = await getCollection("new-arrivals");
+    const collection = await getCollection("featured-products");
 
     if (!collection) {
         return null;

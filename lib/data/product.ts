@@ -17,3 +17,30 @@ export async function getProductsByCategory(slug: string) {
         }
     });
 }
+
+export async function getProductById(id: string) {
+    return await prisma.product.findFirst({
+        where : {
+            id,
+            isActive: true
+        },
+        include: {
+            variants: {
+                where: {
+                    isActive: true
+                },
+                orderBy: [
+                    {createdAt: "asc"},
+                    {isDefault: "desc"}
+                ],
+                include: {
+                    properties: {
+                        orderBy: {
+                            order: "asc"
+                        }
+                    }
+                }
+            }
+        }
+    });
+}

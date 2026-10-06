@@ -23,7 +23,7 @@ export type ProductWithVariants = Omit<
     variants: ProductVariant[];
 };
 
-// Product Card - derived / UI data  
+// Product Details - derived / UI data  
 export type ProductRating = {
     average: number;
     count: number;
@@ -66,6 +66,48 @@ export type ProductCardData = {
 
     /**
      * Optional inventory information.
+     */
+    inventory?: ProductInventory;
+};
+
+export type ProductDetailsVariant = ProductVariant & {
+    properties: ProductPropertyData[];
+};
+
+export type ProductPropertyData = {
+    id: string;
+    section: string;
+    label: string;
+    value: string;
+    order: number;
+};
+
+export type ProductDetailsData = {
+    product: Omit<ProductWithVariants, "variants">;
+    /**
+     * All active variants available for this product.
+     *
+     * Each variant contains its product properties.
+     */
+    variants: ProductDetailsVariant[];
+
+    /**
+     * Variant currently displayed on the page.
+     */
+    selectedVariantId: string;
+
+    /**
+     * Product-level rating.
+     */
+    rating: ProductRating;
+
+    /**
+     * Variant IDs currently in the user's wishlist.
+     */
+    wishlistedVariantIds: string[];
+
+    /**
+     * Inventory information. Kept optional because inventory may be added later.
      */
     inventory?: ProductInventory;
 };

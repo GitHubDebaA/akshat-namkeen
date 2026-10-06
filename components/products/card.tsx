@@ -57,7 +57,7 @@ const ProductCard = ({ data, variantPicker = false, onVariantSelect }: ProductCa
     const quantity = items.find((item) => item.variantId === selectedVariant.id)?.quantity ?? 0;
     const isWishlisted = wishlistedVariantIds.includes(selectedVariant.id);
 
-    const productUrl = `/product/${product.id}/${slugify(product.name)}/view`;
+    const productUrl = `/product/${product.id}/${slugify(product.name)}/view?variant=${selectedVariant.id}`;
 
     const addVariantToCart = (variant: ProductVariant) => {
         addItem({

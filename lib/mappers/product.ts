@@ -6,6 +6,7 @@ import type {
     ProductDetailsData,
     ProductDetailsVariant,
     ProductPropertyData,
+    ProductReviewData,
 } from "@/types/product";
 
 // ============================================================
@@ -144,6 +145,7 @@ export function mapProductDetailsData(
             inStock: boolean;
             quantity?: number;
         };
+        reviews?: ProductReviewData;
     }
 ): ProductDetailsData {
     const variants = product.variants.map(mapProductDetailsVariant);
@@ -195,5 +197,33 @@ export function mapProductDetailsData(
         },
 
         inventory: options?.inventory,
+        reviews: options?.reviews ?? {
+            rating: options?.rating ?? { average: 0, count: 0 },
+            breakdown: [5, 4, 3, 2, 1].map((rating) => ({ rating, count: 0, percentage: 0 })),
+            reviewSummary: null,
+            topReviews: [],
+            totalReviews: 0,
+        },
+    };
+}
+
+export function mapRatingProductData(
+    data: ProductDetailsData
+) {
+    const selectedVariant = data.variants.find(
+        (variant) => variant.id === data.selectedVariantId
+    );
+
+    if (!selectedVariant) {
+        throw new Error(
+            `Selected variant ${data.selectedVariantId} not found for product ${data.product.id}`
+        );
+    }
+
+    return {
+        productId: data.product.id,
+        name: data.product.name,
+        variant: selectedVariant.variant,
+        image: selectedVariant.displayURL ?? "",
     };
 }

@@ -12,6 +12,7 @@ import AccountOptions from "./options/options";
 import ForgotPassword from "./forgot-password/forgot-password";
 import VerifyOtp from "./verify-otp/verify-otp";
 import UpdatePassword from "./update-password/update-password";
+import SignUp from "./signup/signup";
 
 type AccountView =
     | "signin"
@@ -21,11 +22,11 @@ type AccountView =
     | "reset-password";
 
 export default function Account() {
-    const [view, setView] = useState<AccountView>("reset-password");
+    const [view, setView] = useState<AccountView>("signin");
     const [direction, setDirection] = useState<1 | -1>(1);
     const { data: session } = useSession();
-    const { isOpen, closeAccountOptions, openAccountOptions } = useAccountOptions();
-    const [email, setEmail] = useState("to.debasisdas.cu@gmail.com");
+    const { isOpen, closeAccountOptions } = useAccountOptions();
+    const [email, setEmail] = useState("");
 
     const pageVariants = {
         enter: (direction: number) => ({
@@ -65,15 +66,20 @@ export default function Account() {
         closeAccountOptions();
     };
 
+    // Keep the authenticated drawer at the root instead of nesting it inside
+    // the authentication drawer when the session changes after sign in.
+    if (session?.user) return <AccountOptions />;
+
     let content;
-    if (session?.user) {
-        content = <AccountOptions />;
-    } else {
-        switch (view) {
+    switch (view) {
             case "signin":
                 content = (
-                    <SignIn onClose={handleClose} handleForgotPassword={() => navigate("forgot-password", 1)} />
+                    <SignIn onClose={handleClose} handleForgotPassword={() => navigate("forgot-password", 1)} onSignUp={() => navigate("signup", 1)} />
                 );
+                break;
+
+            case "signup":
+                content = <SignUp onClose={handleClose} onSignIn={() => navigate("signin", -1)} />;
                 break;
 
             case "forgot-password":
@@ -97,9 +103,8 @@ export default function Account() {
                 break;
             case "reset-password":
                 content = (
-                    <UpdatePassword email={email} onBack={() => navigate('verify-otp', -1)} onClose={handleClose} onCompleted={() => {openAccountOptions()}}></UpdatePassword>
+                    <UpdatePassword email={email} onBack={() => navigate('verify-otp', -1)} onClose={handleClose} onCompleted={() => navigate("signin", -1)} />
                 );
-        }
     }
     return (
         <AnimatePresence>

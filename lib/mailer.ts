@@ -29,6 +29,26 @@ function createTransporter() {
         });
     };
 
+    export const sendSignupVerificationEmail = async (to: string, otp: string) => {
+        const transporter = createTransporter();
+        await transporter.sendMail({
+            from: `"Akshat Namkeen" <${process.env.EMAIL_USER}>`,
+            to,
+            subject: "Verify your Akshat Namkeen account",
+            html: `
+                <div style="font-family:Arial,sans-serif;max-width:520px;margin:auto;padding:28px;color:#1f2937;">
+                    <div style="background:#b91c1c;color:#fff;padding:18px 22px;border-radius:12px;text-align:center;">
+                        <h1 style="margin:0;font-size:22px;">Akshat Namkeen</h1>
+                    </div>
+                    <h2 style="margin:28px 0 8px;">Verify your email</h2>
+                    <p>Enter this verification code to finish creating your account:</p>
+                    <p style="font-size:32px;font-weight:700;letter-spacing:8px;margin:24px 0;color:#b91c1c;">${otp}</p>
+                    <p>This code expires in 10 minutes. If you didn’t start creating an account, you can ignore this email.</p>
+                </div>
+            `,
+        });
+    };
+
     export const sendWelcomeEmail = async (to: string, name: string) => {
         const transporter = createTransporter();
         await transporter.sendMail({

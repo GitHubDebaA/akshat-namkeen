@@ -3,7 +3,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-import { signIn } from "next-auth/react"
+import { signIn } from "next-auth/react";
+import type { SignInResponse } from "next-auth/react";
 
 type AccountOption = {
     isOpen: boolean;
@@ -11,7 +12,7 @@ type AccountOption = {
     closeAccountOptions: () => void;
     toggleAccountOptions: () => void;
     handleGoogleSignin: () => void;
-    handleCredentialSignIn: (email: string, password: string) => void;
+    handleCredentialSignIn: (email: string, password: string) => Promise<SignInResponse | undefined>;
 }
 
 export const useAccountOptions = create<AccountOption>()(

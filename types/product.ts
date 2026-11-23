@@ -29,6 +29,12 @@ export type ProductRating = {
     count: number;
 };
 
+export type ProductRatingBreakdown = {
+    rating: number;
+    count: number;
+    percentage: number;
+}
+
 export type ProductWishlist = {
     isWishlisted: boolean;
 };
@@ -42,6 +48,26 @@ export type ProductPricing = {
     mrp: number;
     sellingPrice: number;
     discountPercentage: number;
+};
+
+export type ProductReview = {
+    id: string;
+    rating: number;
+    title?: string | null;
+    comment: string;
+    customerName: string;
+    createdAt: string;
+    verifiedPurchase?: boolean;
+    helpfulCount?: number;
+    images?: string[];
+};
+
+export type ProductReviewData = {
+    rating: ProductRating;
+    breakdown: ProductRatingBreakdown[];
+    reviewSummary: string | null;
+    topReviews: ProductReview[];
+    totalReviews: number;
 };
 
 export type ProductCardData = {
@@ -110,4 +136,12 @@ export type ProductDetailsData = {
      * Inventory information. Kept optional because inventory may be added later.
      */
     inventory?: ProductInventory;
+    reviews: ProductReviewData;
 };
+
+export type RatingProductData = {
+    productId: string;
+    name: string;
+    variant: string;
+    image: string;
+}

@@ -12,6 +12,7 @@ interface WishlistButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEleme
     variantId: string;
     initialWishlisted?: boolean;
     size?: "sm" | "md" | "lg";
+    tone?: "brand" | "primary";
 }
 
 const sizeClasses = {
@@ -30,14 +31,15 @@ export default function WishlistButton({
     variantId,
     initialWishlisted = false,
     size = "md",
+    tone = "brand",
     className,
     ...props
 }: WishlistButtonProps) {
     const [wishlisted, setWishlisted] = useState(initialWishlisted);
     const [isPending, startTransition] = useTransition();
+    const isPrimary = tone === "primary";
 
     async function handleToggle(e: React.MouseEvent<HTMLButtonElement>) {
-        // Prevent ProductCard / Link from opening
         e.preventDefault();
         e.stopPropagation();
 
@@ -45,9 +47,7 @@ export default function WishlistButton({
 
         const previousValue = wishlisted;
         const nextValue = !previousValue;
-
-        // Optimistic update
-        setWishlisted(!nextValue);
+        setWishlisted(nextValue);
 
         startTransition(async () => {
             try {
@@ -71,23 +71,27 @@ export default function WishlistButton({
             onClick={handleToggle}
             className={cn(
                 "group relative inline-flex shrink-0 items-center justify-center rounded-full p-0 transition-all duration-300",
-                "bg-obsidian text-white hover:bg-obsidian/90 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-project_primary focus-visible:ring-offset-2",
+                isPrimary
+                    ? "bg-ivory text-obsidian shadow-sm hover:bg-ivory/80 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-project_primary focus-visible:ring-offset-2"
+                    : "bg-obsidian text-ivory hover:bg-obsidian/90 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-project_primary focus-visible:ring-offset-2",
                 "active:scale-95 disabled:pointer-events-none disabled:opacity-70",
                 sizeClasses[size],
-                wishlisted && "bg-obsidian text-project_primary",
+                wishlisted && (isPrimary ? "text-project_primary" : "bg-obsidian text-project_primary"),
                 className
             )}
             {...props}
         >
             {isPending ? (
-                <Loader2 className={cn("animate-spin text-white/80", iconSizeClasses[size])} />
+                <Loader2 className={cn("animate-spin", isPrimary ? "text-obsidian/50" : "text-ivory/80", iconSizeClasses[size])} />
             ) : (
                 <Heart
                     className={cn(
                         iconSizeClasses[size],
-                        "transition-all duration-300 group-hover:scale-110 active:scale-125",
+                        "transition-all duration-200 group-hover:scale-110 active:scale-125",
                         wishlisted
-                            ? "fill-project_primary text-project_primary animate-in zoom-in-75 duration-200"
+                            ? isPrimary
+                                ? "fill-project_primary text-project_primary"
+                                : "fill-project_primary text-project_primary"
                             : "fill-none text-current"
                     )}
                     strokeWidth={2}

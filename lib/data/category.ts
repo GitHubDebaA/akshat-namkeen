@@ -10,3 +10,9 @@ export async function getCategory() {
         },
     });
 }
+
+export async function getCategoryBySlug(slug: string) {
+    return prisma.category.findFirst({
+        where: { slug, isActive: true },
+    });
+}

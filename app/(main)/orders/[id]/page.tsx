@@ -1,6 +1,9 @@
 import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { getOrderForUser } from "@/lib/data/order";
 import OrderDetails from "@/components/orders/order-details";
-import { mockOrders } from "@/lib/mock/order";
 
 interface OrderDetailsPageProps {
     params: Promise<{
@@ -12,12 +15,13 @@ export default async function OrderDetailsPage({
     params,
 }: OrderDetailsPageProps) {
     const { id } = await params;
-
-    const order = mockOrders.find((order) => order.id === id);
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) redirect("/signin?callbackUrl=%2Forders");
+    const order = await getOrderForUser(id, session.user.id);
 
     if (!order) {
         notFound();
     }
 
-    return <OrderDetails order={order} />;
+    return <OrderDetails order={order} supportEmail={process.env.SUPPORT_EMAIL} supportPhone={process.env.SUPPORT_PHONE} />;
 }

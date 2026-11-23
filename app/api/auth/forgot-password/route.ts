@@ -4,7 +4,17 @@ import { randomInt } from "crypto";
 import bcrypt from "bcrypt";
 
 export async function POST(req: Request) {
-    const { email } = await req.json();
+    let body: { email?: unknown };
+    try {
+        body = await req.json();
+    } catch {
+        return Response.json({ error: "Invalid request body." }, { status: 400 });
+    }
+
+    if (typeof body.email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email.trim())) {
+        return Response.json({ error: "Please enter a valid email address." }, { status: 400 });
+    }
+    const email = body.email.trim().toLowerCase();
 
     const user = await prisma.user.findUnique({
         where: { email },

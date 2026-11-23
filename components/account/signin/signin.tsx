@@ -1,13 +1,12 @@
 "use client";
 
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { Eye, EyeOff, Mail, Lock, X, LogIn } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signInSchema, SignInInput } from "@/lib/auth-schema";
 
-import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import GoogleIcon from "@/components/icons/google-icon";
@@ -17,6 +16,7 @@ import { toast } from "sonner";
 interface ChildProps {
     onClose: () => void;
     handleForgotPassword: () => void;
+    onSignUp: () => void;
 }
 
 const AUTH_ERRORS: Record<string, string> = {
@@ -32,7 +32,8 @@ const AUTH_ERRORS: Record<string, string> = {
     Default: "Something went wrong. Please try again.",
 };
 
-export default function SignIn({ onClose, handleForgotPassword }: ChildProps) {
+export default function SignIn({ onClose, handleForgotPassword, onSignUp }: ChildProps) {
+    const { update } = useSession();
     const {
         register,
         handleSubmit,
@@ -58,8 +59,8 @@ export default function SignIn({ onClose, handleForgotPassword }: ChildProps) {
                 toast.error(errorMessage);
                 return;
             }
-            toast.success('Sign in successfully.');  
-            onClose();
+            await update();
+            toast.success("Signed in successfully.");
         } catch (error) {
             console.error(error);
             const errorMessage = "Unable to connect to the server. Please check your internet connection and try again.";
@@ -211,12 +212,9 @@ export default function SignIn({ onClose, handleForgotPassword }: ChildProps) {
                     <span className="text-gray-500">
                         New to Akshat Namkeen?
                     </span>
-                    <Link
-                        href="/signup"
-                        className="text-project_primary hover:underline uppercase"
-                    >
+                    <button type="button" onClick={onSignUp} className="text-project_primary hover:underline uppercase">
                         Sign Up
-                    </Link>
+                    </button>
                 </div>
                 <span className="text-gray-500 text-xs">
                     Create an account to save addresses,

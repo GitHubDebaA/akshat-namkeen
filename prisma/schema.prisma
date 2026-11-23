@@ -19,6 +19,8 @@ model User {
   sessions      Session[]
   addresses     Address[]
   wishlist      Wishlist?
+  orders        Order[]
+  reviews       ProductReview[]
 }
 
 model Account {
@@ -76,6 +78,19 @@ model PasswordResetOTP {
   @@index([email])
 }
 
+model SignupVerification {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String
+  otp       String
+  attempts  Int      @default(0)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([expiresAt])
+}
+
 model Category {
   id          String    @id @default(cuid())
   name        String    @unique
@@ -101,6 +116,7 @@ model Product {
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
   variants    ProductVariant[]
+  reviews     ProductReview[]
 
   @@index([categoryId])
 }
@@ -126,6 +142,7 @@ model ProductVariant {
   properties ProductProperty[]
   collections CollectionItem[]
   wishlistItems WishlistItem[]
+  orderItems OrderItem[]
   @@index([productId])
 }
 
@@ -206,6 +223,7 @@ model Address {
   updatedAt DateTime @updatedAt
 
   @@index([userId])
+  orders    Order[]
 }
 
 enum AddressType {
@@ -236,4 +254,95 @@ model WishlistItem {
   @@unique([wishlistId, variantId])
   @@index([wishlistId])
   @@index([variantId])
+}
+
+model Order {
+  id               String        @id @default(cuid())
+  orderNumber      String        @unique
+  userId           String
+  user             User          @relation(fields: [userId], references: [id], onDelete: Restrict)
+  addressId        String
+  address          Address       @relation(fields: [addressId], references: [id], onDelete: Restrict)
+  status           OrderStatus   @default(PROCESSING)
+  paymentMethod    PaymentMethod @default(COD)
+  paymentStatus    PaymentStatus @default(PENDING)
+  courierName      String?
+  trackingNumber   String?
+  estimatedDelivery DateTime?
+  subtotal         Decimal       @db.Decimal(10, 2)
+  shippingCharge   Decimal       @db.Decimal(10, 2)
+  total            Decimal       @db.Decimal(10, 2)
+  items            OrderItem[]
+  statusHistory    OrderEvent[]
+  reviews          ProductReview[]
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@index([userId, createdAt])
+  @@index([status, createdAt])
+}
+
+model OrderItem {
+  id            String         @id @default(cuid())
+  orderId       String
+  order         Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId     String
+  variantId     String?
+  variant       ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+  productName   String
+  variantName   String
+  image         String
+  quantity      Int
+  unitPrice     Decimal        @db.Decimal(10, 2)
+  totalPrice    Decimal        @db.Decimal(10, 2)
+
+  @@index([orderId])
+}
+
+model OrderEvent {
+  id          String      @id @default(cuid())
+  orderId     String
+  order       Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status      OrderStatus
+  description String?
+  createdAt   DateTime    @default(now())
+
+  @@index([orderId, createdAt])
+}
+
+model ProductReview {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  rating    Int
+  comment   String   @db.VarChar(1500)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+  @@index([productId, createdAt])
+}
+
+enum OrderStatus {
+  PROCESSING
+  CONFIRMED
+  PACKED
+  SHIPPED
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  COD
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
 }

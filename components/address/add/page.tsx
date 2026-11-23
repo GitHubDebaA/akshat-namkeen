@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner"
 
 export default function AddAddress() {
-    const { closeAddressOptions, setPageName } = useAddressOptions();
+    const { closeAddressOptions, setPageName, notifyAddressChange } = useAddressOptions();
     const [loading, setLoading] = useState(false);
 
     const [formData, setFormData] = useState({
@@ -62,6 +62,7 @@ export default function AddAddress() {
                 },
             });
 
+            notifyAddressChange();
             setPageName('view');
         } catch (error) {
             toast.error(

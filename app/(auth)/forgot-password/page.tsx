@@ -21,6 +21,7 @@ export default function LoginPage() {
         try {
             const res = await fetch("/api/auth/forgot-password", {
                 method: "POST",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email }),
             });
 
@@ -42,21 +43,21 @@ export default function LoginPage() {
     const handleVerifyOTP = async () => {
         setLoading(true);
         setError("");
+        try {
+            const res = await fetch("/api/auth/verify-otp", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, otp }),
+            });
+            const data = await res.json();
 
-        const res = await fetch("/api/auth/verify-otp", {
-            method: "POST",
-            body: JSON.stringify({ email, otp }),
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-            setError(data.error);
-        } else {
-            setStep(3);
+            if (!res.ok) setError(data.error ?? "Unable to verify OTP.");
+            else setStep(3);
+        } catch {
+            setError("Unable to connect. Please try again.");
+        } finally {
+            setLoading(false);
         }
-
-        setLoading(false);
     }
 
     const handleResetPassword = async () => {
@@ -67,20 +68,21 @@ export default function LoginPage() {
         setLoading(true);
         setError("");
 
-        const res = await fetch("/api/auth/reset-password", {
-            method: "POST",
-            body: JSON.stringify({ email, password }),
-        });
+        try {
+            const res = await fetch("/api/auth/reset-password", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password }),
+            });
+            const data = await res.json();
 
-        const data = await res.json();
-
-        if (!res.ok) {
-            setError(data.error);
-        } else {
-            setStep(4);
+            if (!res.ok) setError(data.error ?? "Unable to reset password.");
+            else setStep(4);
+        } catch {
+            setError("Unable to connect. Please try again.");
+        } finally {
+            setLoading(false);
         }
-
-        setLoading(false);
     }
 
     return (

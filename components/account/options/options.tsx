@@ -32,9 +32,16 @@ export default function AccountOptions() {
         if (!validateForm()) return;
 
         setLoading(true);
-        const result = handleCredentialSignIn(email, password);
-        console.log(result);
-        closeAccountOptions();
+        try {
+            const result = await handleCredentialSignIn(email.trim(), password);
+            if (result?.error) {
+                setErrors((previous) => ({ ...previous, password: "Email or password is incorrect." }));
+            } else if (result?.ok) {
+                closeAccountOptions();
+            }
+        } finally {
+            setLoading(false);
+        }
     }
 
     const validateForm = () => {

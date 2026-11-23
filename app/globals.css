@@ -8,6 +8,11 @@
 	--font-poppins: "Poppins", sans-serif;
 	--color-project_primary: oklch(57.7% 0.245 27.325);
 	--color-project_primary-foreground: oklch(70.4% 0.191 22.216);
+	--color-brand-50: #fff8f1;
+	--color-brand-100: #f7e8d8;
+	--color-brand-200: #ead5c1;
+	--color-brand-300: #d9b89b;
+	--color-brand-500: #b45d32;
 	--color-obsidian: #0a0a0a;
 	--color-ivory: #faf8f4;
 }
@@ -131,6 +136,25 @@
 
 	body {
 		@apply bg-background text-foreground;
+	}
+
+	input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="button"]):not([type="submit"]):not([type="reset"]),
+	select,
+	textarea {
+		@apply rounded-xl border border-brand-200 bg-white text-sm text-obsidian shadow-sm transition-colors placeholder:text-muted-foreground/80 focus-visible:border-project_primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-project_primary/20 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:bg-brand-50 disabled:opacity-70;
+	}
+
+	input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="button"]):not([type="submit"]):not([type="reset"]),
+	select {
+		@apply min-h-11 px-4;
+	}
+
+	textarea {
+		@apply min-h-28 px-4 py-3;
+	}
+
+	button:not([data-slot="button"]) {
+		@apply cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-project_primary/30 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60;
 	}
 
 	html {

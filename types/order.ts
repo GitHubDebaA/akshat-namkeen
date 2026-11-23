@@ -63,7 +63,7 @@ export interface ShippingAddress {
     state: string;
     postalCode: string;
 
-    addressType?: "HOME" | "OFFICE";
+    addressType?: "HOME" | "OFFICE" | "OTHER";
 }
 
 export type PaymentMethod =

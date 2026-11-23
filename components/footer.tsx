@@ -1,37 +1,32 @@
 import Link from "next/link";
 import Container from "./Container";
-import { FaInstagram, FaFacebook, FaLinkedinIn, FaWhatsapp } from 'react-icons/fa';
-import { FaXTwitter } from "react-icons/fa6";
 
 export default function Footer() {
+    const supportEmail = process.env.SUPPORT_EMAIL;
+    const supportPhone = process.env.SUPPORT_PHONE;
     const footerLinks = [
         {
             title: 'Shop',
             links: [
-                { label: 'All Namkeen', href: '/shop' },
+                { label: 'All Namkeen', href: '/product' },
                 { label: 'Collections', href: '/collections' },
-                { label: 'Best Sellers', href: '/shop/best-sellers' },
-                { label: 'Combo Packs', href: '/shop/combos' },
             ],
         },
         {
+            title: 'Your account',
+            links: [
+                { label: 'My Orders', href: '/orders' },
+                { label: 'Wishlist', href: '/wishlist' },
+            ],
+        },
+        ...(supportEmail || supportPhone ? [{
             title: 'Support',
             links: [
-                { label: 'Track Order', href: '/orders/track' },
-                { label: 'Contact Us', href: '/contact' },
-                { label: 'FAQs', href: '/faqs' },
+                ...(supportEmail ? [{ label: supportEmail, href: `mailto:${supportEmail}` }] : []),
+                ...(supportPhone ? [{ label: supportPhone, href: `tel:${supportPhone.replace(/[^+\d]/g, "")}` }] : []),
             ],
-        },
-        {
-            title: 'Legal',
-            links: [
-                { label: 'Privacy Policy', href: '/privacy' },
-                { label: 'Terms of Service', href: '/terms' },
-            ],
-        },
+        }] : []),
     ];
-
-    const iconStyles = "cursor-pointer w-5 h-5 text-ivory hover:text-project_primary hover:scale-120 hoverEffect transition-transform duration-100 active:scale-90";
 
     return (
         <footer className="w-full bg-obsidian">
@@ -70,14 +65,6 @@ export default function Footer() {
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4 w-full pt-2">
                     <div className="text-sm text-center md:text-left text-ivory/70">
                         &copy; {new Date().getFullYear()} Akshat Namkeen. All rights reserved.
-                    </div>
-                    <div className="text-sm text-center flex items-center gap-4">
-                        <div className="text-ivory/80">Follow Us</div>
-                        <FaFacebook className={iconStyles} />
-                        <FaXTwitter className={iconStyles} />
-                        <FaInstagram className={iconStyles} />
-                        <FaLinkedinIn className={iconStyles} />
-                        <FaWhatsapp className={iconStyles} />
                     </div>
                 </div>
             </Container>

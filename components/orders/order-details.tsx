@@ -8,11 +8,12 @@ import {
     Package,
     RotateCcw,
     Star,
-    Truck,
 } from "lucide-react";
 
 import { Order } from "@/types/order";
 import { formatDate } from "@/lib/utils";
+import { toast } from "sonner";
+import { useCart } from "@/store/cart";
 
 import OrderTimeline from "./order-timeline";
 import OrderItems from "./order-items";
@@ -21,13 +22,30 @@ import OrderPayment from "./order-payment";
 
 interface OrderDetailsProps {
     order: Order;
+    supportEmail?: string;
+    supportPhone?: string;
 }
 
 export default function OrderDetails({
     order,
+    supportEmail,
+    supportPhone,
 }: OrderDetailsProps) {
     const isDelivered = order.status === "DELIVERED";
     const isCancelled = order.status === "CANCELLED";
+    const addItem = useCart((state) => state.addItem);
+
+    function buyAgain() {
+        order.items.forEach((item) => addItem({
+            variantId: item.variantId,
+            productId: item.productId,
+            productName: item.productName,
+            variantName: item.variantName,
+            price: item.unitPrice,
+            displayURL: item.image,
+        }, item.quantity));
+        toast.success("Items from your order were added to your bag.");
+    }
 
     return (
         <main className="min-h-screen bg-brand-50/40">
@@ -71,6 +89,7 @@ export default function OrderDetails({
                                 {!isCancelled && (
                                     <button
                                         type="button"
+                                        onClick={() => window.print()}
                                         className="inline-flex items-center gap-2 rounded-full border border-brand-200 px-4 py-2 text-xs font-medium text-obsidian transition hover:bg-brand-50"
                                     >
                                         <Download className="h-4 w-4" />
@@ -79,13 +98,13 @@ export default function OrderDetails({
                                 )}
 
                                 {isDelivered && (
-                                    <button
-                                        type="button"
+                                    <Link
+                                        href={order.items[0] ? `/product/${order.items[0].productId}/${encodeURIComponent(order.items[0].productName.toLowerCase().replace(/[^a-z0-9]+/g, "-"))}/view#reviews` : "/product"}
                                         className="inline-flex items-center gap-2 rounded-full bg-obsidian px-4 py-2 text-xs font-medium text-white transition hover:bg-obsidian/90"
                                     >
                                         <Star className="h-4 w-4" />
-                                        Review
-                                    </button>
+                                        View product reviews
+                                    </Link>
                                 )}
                             </div>
                         </div>
@@ -121,7 +140,7 @@ export default function OrderDetails({
                         </section>
 
                         {/* Help */}
-                        <section className="rounded-2xl border border-brand-200 bg-white p-5 sm:p-6">
+                        {(supportEmail || supportPhone) && <section className="rounded-2xl border border-brand-200 bg-white p-5 sm:p-6">
                             <div className="flex gap-4">
                                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-50">
                                     <HelpCircle className="h-5 w-5 text-project_primary" />
@@ -132,27 +151,14 @@ export default function OrderDetails({
                                         Need help with your order?
                                     </h3>
 
-                                    <p className="mt-1 text-xs leading-5 text-obsidian/55">
-                                        Have a question about delivery,
-                                        returns or your order?
-                                    </p>
-
+                                    <p className="mt-1 text-xs leading-5 text-obsidian/55">Have a question about delivery or your order?</p>
                                     <div className="mt-3 flex flex-wrap gap-4">
-                                        <button className="text-xs font-medium text-project_primary hover:underline">
-                                            Contact us
-                                        </button>
-
-                                        <button className="text-xs font-medium text-project_primary hover:underline">
-                                            Return policy
-                                        </button>
-
-                                        <button className="text-xs font-medium text-project_primary hover:underline">
-                                            Refund policy
-                                        </button>
+                                        {supportEmail && <a href={`mailto:${supportEmail}`} className="text-xs font-medium text-project_primary hover:underline">{supportEmail}</a>}
+                                        {supportPhone && <a href={`tel:${supportPhone.replace(/[^+\d]/g, "")}`} className="text-xs font-medium text-project_primary hover:underline">{supportPhone}</a>}
                                     </div>
                                 </div>
                             </div>
-                        </section>
+                        </section>}
                     </div>
 
                     {/* Right */}
@@ -176,13 +182,9 @@ export default function OrderDetails({
 
                             <div className="divide-y divide-brand-100">
 
-                                {!isDelivered &&
-                                    !isCancelled && (
-                                        <button className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm font-medium text-obsidian transition hover:bg-brand-50">
-                                            <Truck className="h-4 w-4 text-project_primary" />
-                                            Track order
-                                        </button>
-                                    )}
+                                {!isDelivered && !isCancelled && order.tracking?.trackingNumber && (
+                                    <p className="px-5 py-4 text-sm text-obsidian/70">Tracking number: {order.tracking.trackingNumber}</p>
+                                )}
 
                                 {isDelivered && (
                                     <button className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm font-medium text-obsidian transition hover:bg-brand-50">
@@ -192,7 +194,7 @@ export default function OrderDetails({
                                 )}
 
                                 {!isCancelled && (
-                                    <button className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm font-medium text-obsidian transition hover:bg-brand-50">
+                                    <button onClick={buyAgain} className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm font-medium text-obsidian transition hover:bg-brand-50">
                                         <RotateCcw className="h-4 w-4 text-project_primary" />
                                         Buy Again
                                     </button>

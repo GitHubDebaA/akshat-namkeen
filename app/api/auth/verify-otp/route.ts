@@ -3,7 +3,17 @@ import prisma from "@/lib/prisma";
 const MAX_ATTEMPTS = 5;
 
 export async function POST(req: Request) {
-    const { email, otp } = await req.json();
+    let body: { email?: unknown; otp?: unknown };
+    try {
+        body = await req.json();
+    } catch {
+        return Response.json({ error: "Invalid request body." }, { status: 400 });
+    }
+    if (typeof body.email !== "string" || typeof body.otp !== "string" || !/^\d{6}$/.test(body.otp)) {
+        return Response.json({ error: "Enter a valid six-digit verification code." }, { status: 400 });
+    }
+    const email = body.email.trim().toLowerCase();
+    const { otp } = body;
 
     const record = await prisma.passwordResetOTP.findFirst({
         where: { email },

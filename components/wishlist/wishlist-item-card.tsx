@@ -2,134 +2,105 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingBag, Trash2 } from "lucide-react";
-import { useTransition } from "react";
+import { ImageOff, ShoppingBag } from "lucide-react";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
 
-import { removeFromWishlist } from "@/lib/actions/wishlist";
+import { Button } from "@/components/ui/button";
 import WishlistButton from "./wishlist-button";
 import { WishlistItemWithProduct } from "@/types/wishlist";
-
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, slugify } from "@/lib/utils";
+import { useCart } from "@/store/cart";
 
 interface WishlistItemCardProps {
     item: WishlistItemWithProduct;
 }
 
-export default function WishlistItemCard({
-    item,
-}: WishlistItemCardProps) {
-    const [isPending, startTransition] = useTransition();
-
+export default function WishlistItemCard({ item }: WishlistItemCardProps) {
+    const addItem = useCart((state) => state.addItem);
     const variant = item.variant;
     const product = variant.product;
+    const productUrl = `/product/${product.id}/${slugify(product.name)}/view?variant=${variant.id}`;
 
-    const productUrl = `/products/${product.id}/${slugify(
-        product.name
-    )}/view?variant=${variant.id}`;
-
-    function handleRemove() {
-        startTransition(async () => {
-            try {
-                await removeFromWishlist(variant.id);
-
-                toast.success("Removed from wishlist");
-
-                window.location.reload();
-            } catch {
-                toast.error("Unable to remove item");
-            }
+    function handleAddToCart() {
+        if (!variant.isActive) return;
+        addItem({
+            variantId: variant.id,
+            productId: product.id,
+            productName: product.name,
+            variantName: variant.name,
+            price: Number(variant.sellingPrice),
+            displayURL: variant.displayURL,
         });
+        toast.success("Added to cart");
     }
 
     return (
-        <article className="group">
-
-            {/* Image */}
-            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-brand-50">
-
-                <Link href={productUrl}>
+        <motion.article
+            variants={{
+                hidden: { opacity: 0, y: 12 },
+                show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } },
+            }}
+            whileHover={{ y: -3 }}
+            className="group flex h-full flex-col overflow-hidden rounded-2xl border border-obsidian/10 bg-ivory transition-all duration-300 hover:shadow-xl"
+        >
+            <div className="relative aspect-[4/5] overflow-hidden bg-ivory">
+                <Link href={productUrl} aria-label={`View ${product.name}`} className="absolute inset-0">
                     {variant.displayURL ? (
                         <Image
                             src={variant.displayURL}
                             alt={product.name}
                             fill
-                            className="object-cover transition duration-500 group-hover:scale-105"
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                            className={`object-cover transition-transform duration-500 group-hover:scale-105 ${variant.isActive ? "" : "grayscale opacity-60"}`}
                         />
                     ) : (
-                        <div className="flex h-full items-center justify-center text-sm text-obsidian/30">
-                            No image
-                        </div>
-                    )}
-                </Link>
-
-                {/* Wishlist */}
-                <div className="absolute right-3 top-3">
-                    <WishlistButton
-                        variantId={variant.id}
-                        initialWishlisted
-                        size="sm"
-                    />
-                </div>
-            </div>
-
-            {/* Information */}
-            <div className="pt-4">
-
-                <Link href={productUrl}>
-                    <h3 className="truncate text-sm font-semibold text-obsidian transition hover:text-project_primary">
-                        {product.name}
-                    </h3>
-                </Link>
-
-                <p className="mt-1 text-xs text-obsidian/50">
-                    {variant.name}
-                </p>
-
-                <div className="mt-3 flex items-center justify-between">
-                    <p className="text-base font-semibold text-obsidian">
-                        {formatPrice(Number(variant.sellingPrice))}
-                    </p>
-
-                    {!variant.isActive && (
-                        <span className="text-xs font-medium text-red-500">
-                            Unavailable
+                        <span className="flex h-full flex-col items-center justify-center gap-2 text-obsidian/35">
+                            <ImageOff className="h-9 w-9" strokeWidth={1.2} />
+                            <span className="text-[10px] font-medium">Image coming soon</span>
                         </span>
                     )}
+                </Link>
+
+                <div className="absolute left-2 top-2">
+                    <span className={`rounded-md px-2 py-1 text-[10px] font-semibold ${variant.isActive ? "bg-ivory/90 text-obsidian" : "bg-obsidian/80 text-ivory"}`}>
+                        {variant.isActive ? "In stock" : "Unavailable"}
+                    </span>
                 </div>
-
-                {/* Actions */}
-                <div className="mt-4 flex gap-2">
-
-                    {variant.isActive && (
-                        <button
-                            type="button"
-                            className="flex flex-1 items-center justify-center gap-2 rounded-full bg-obsidian px-4 py-2.5 text-xs font-medium text-white transition hover:bg-obsidian/90"
-                        >
-                            <ShoppingBag className="h-4 w-4" />
-                            Add to Cart
-                        </button>
-                    )}
-
-                    <button
-                        type="button"
-                        disabled={isPending}
-                        onClick={handleRemove}
-                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-brand-200 text-obsidian/50 transition hover:border-red-200 hover:text-red-500"
-                        aria-label="Remove from wishlist"
-                    >
-                        <Trash2 className="h-4 w-4" />
-                    </button>
+                <div className="absolute right-2 top-2 flex items-center gap-1">
+                    <WishlistButton variantId={variant.id} initialWishlisted size="sm" tone="primary" />
                 </div>
             </div>
-        </article>
-    );
-}
 
-function slugify(value: string) {
-    return value
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "");
+            <div className="flex flex-1 flex-col p-3 sm:p-4">
+                <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                        <Link href={productUrl} className="block">
+                            <h2 className="line-clamp-2 text-sm font-semibold leading-5 text-obsidian transition-colors group-hover:text-project_primary">{product.name}</h2>
+                        </Link>
+                        <p className="mt-1 line-clamp-1 text-xs leading-4 text-obsidian/60">{variant.variant}</p>
+                    </div>
+                    <p className="shrink-0 text-right text-sm font-bold text-obsidian sm:text-base">{formatPrice(Number(variant.sellingPrice))}</p>
+                </div>
+                <div className="mt-3 border-t border-obsidian/10 pt-3">
+                    {variant.isActive ? (
+                        <Button
+                            type="button"
+                            onClick={handleAddToCart}
+                            className="group/button relative h-9 w-full overflow-hidden rounded-full bg-obsidian text-xs text-ivory transition-all duration-300 hover:shadow-lg"
+                        >
+                            <span className="absolute inset-0 origin-left scale-x-0 bg-project_primary transition-transform duration-300 group-hover/button:scale-x-100" />
+                            <span className="relative flex items-center justify-center gap-2">
+                                <ShoppingBag className="h-3.5 w-3.5" /> Add to cart
+                            </span>
+                        </Button>
+                    ) : (
+                        <Button type="button" disabled className="h-9 w-full rounded-full bg-obsidian/10 text-xs text-obsidian/45">
+                            Unavailable
+                        </Button>
+                    )}
+                </div>
+            </div>
+        </motion.article>
+    );
 }

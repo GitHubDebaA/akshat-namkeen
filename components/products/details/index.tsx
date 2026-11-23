@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
@@ -12,8 +12,12 @@ import ProductSummary from "./product-summary";
 import ProductVariants from "./product-variants";
 import ProductActions from "./product-actions";
 import ProductInformation from "./product-information";
+import ProductReviews from "./reviews/product-reviews";
 
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { mapRatingProductData } from "@/lib/mappers/product";
+import { useCart } from "@/store/cart";
+import { toast } from "sonner";
 
 interface Props {
     data: ProductDetailsData;
@@ -27,13 +31,16 @@ export default function ProductDetails({ data }: Props) {
         rating,
         wishlistedVariantIds,
         inventory,
+        reviews
     } = data;
 
-    const [selectedVariantId, setSelectedVariantId] =
-        useState(initialVariantId);
-
+    const [selectedVariantId, setSelectedVariantId] = useState(initialVariantId);
     const [quantity, setQuantity] = useState(1);
     const [added, setAdded] = useState(false);
+    const [isAdding, setIsAdding] = useState(false);
+    const [isBuying, setIsBuying] = useState(false);
+    const addedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const addItem = useCart((state) => state.addItem);
 
     const router = useRouter();
     const pathname = usePathname();
@@ -47,12 +54,17 @@ export default function ProductDetails({ data }: Props) {
         setSelectedVariantId(initialVariantId);
     }, [initialVariantId]);
 
+    useEffect(() => () => {
+        if (addedTimer.current) clearTimeout(addedTimer.current);
+    }, []);
+
     if (!selectedVariant) {
         return null;
     }
 
     const handleVariantChange = (variantId: string) => {
         setSelectedVariantId(variantId);
+        setAdded(false);
 
         const newParams = new URLSearchParams(searchParams.toString());
 
@@ -63,28 +75,41 @@ export default function ProductDetails({ data }: Props) {
         });
     };
 
-    const handleAddToCart = () => {
-        /*
-         * Cart integration will go here.
-         *
-         * Example:
-         *
-         * addItem({
-         *     variantId: selectedVariant.id,
-         *     productId: product.id,
-         *     productName: product.name,
-         *     variantName: selectedVariant.variant,
-         *     price: selectedVariant.sellingPrice,
-         *     displayURL: selectedVariant.displayURL,
-         *     quantity,
-         * });
-         */
+    const addSelectedToCart = () => {
+        if (!selectedVariant) return;
+        addItem({
+            variantId: selectedVariant.id,
+            productId: product.id,
+            productName: product.name,
+            variantName: selectedVariant.variant,
+            price: Number(selectedVariant.sellingPrice),
+            displayURL: selectedVariant.displayURL,
+        }, quantity);
+    };
 
+    const handleAddToCart = async () => {
+        if (isAdding || isBuying || !selectedVariant) return;
+
+        setIsAdding(true);
+        await new Promise((resolve) => setTimeout(resolve, 300));
+        addSelectedToCart();
+
+        setIsAdding(false);
         setAdded(true);
+        toast.success("Added to cart.");
 
-        setTimeout(() => {
-            setAdded(false);
-        }, 2000);
+        if (addedTimer.current) clearTimeout(addedTimer.current);
+        addedTimer.current = setTimeout(() => setAdded(false), 1800);
+    };
+
+    const handleBuyNow = async () => {
+        if (isAdding || isBuying || !selectedVariant) return;
+
+        setIsBuying(true);
+        await new Promise((resolve) => setTimeout(resolve, 300));
+        addSelectedToCart();
+        toast.success("Added to cart. Taking you to checkout.");
+        router.push("/checkout");
     };
 
     return (
@@ -117,12 +142,15 @@ export default function ProductDetails({ data }: Props) {
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12">
                     {/* Left */}
-                    <ProductGallery
-                        variant={selectedVariant}
-                        wishlisted={wishlistedVariantIds.includes(
-                            selectedVariant.id
-                        )}
-                    />
+                    <div>
+                        {/* Product Images */}
+                        <ProductGallery
+                            variant={selectedVariant}
+                            wishlisted={wishlistedVariantIds.includes(
+                                selectedVariant.id
+                            )}
+                        />
+                    </div>
 
                     {/* Right */}
                     <div>
@@ -149,9 +177,12 @@ export default function ProductDetails({ data }: Props) {
                                 variant={selectedVariant}
                                 quantity={quantity}
                                 added={added}
+                                isAdding={isAdding}
+                                isBuying={isBuying}
                                 inventory={inventory}
                                 onQuantityChange={setQuantity}
                                 onAddToCart={handleAddToCart}
+                                onBuyNow={handleBuyNow}
                             />
 
                             <ProductInformation
@@ -162,6 +193,9 @@ export default function ProductDetails({ data }: Props) {
                     </div>
                 </div>
 
+                <div>
+                    <ProductReviews product={mapRatingProductData(data)} reviews={reviews}></ProductReviews>
+                </div>
                 {/* Related Products - later */}
             </div>
         </div>

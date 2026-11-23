@@ -120,7 +120,7 @@ const ProductCard = ({ data, variantPicker = false, onVariantSelect }: ProductCa
                     fill
                     sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 16vw"
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    priority={false}
+                    loading="lazy"
                 />
             ) : (
                 <div className="absolute inset-0 flex flex-col items-center justify-center p-4 sm:p-6 select-none">
@@ -259,9 +259,12 @@ const ProductCard = ({ data, variantPicker = false, onVariantSelect }: ProductCa
                         {/* Rating */}
                         {
                             rating.count === 0 ? (
-                                <div className="inline-flex items-center gap-1.5 rounded-sm border border-green-200 bg-green-50 px-2 py-0.5 text-green-700">
-                                    <Star className="h-3 w-3 fill-current" />
-                                    <span className="text-xs font-semibold uppercase tracking-wider">
+                                <div className="relative inline-flex items-center gap-1 overflow-hidden rounded-full bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-500 px-2.5 py-0.5 text-white shadow-sm shadow-emerald-600/20 ring-1 ring-white/20">
+                                    {/* Animated Wave Light Sweep */}
+                                    <span className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+
+                                    <Star className="h-3 w-3 fill-white text-white relative z-10" />
+                                    <span className="text-[10px] font-extrabold uppercase tracking-widest drop-shadow-xs relative z-10">
                                         New
                                     </span>
                                 </div>
@@ -313,7 +316,7 @@ const ProductCard = ({ data, variantPicker = false, onVariantSelect }: ProductCa
                     open={isVariantDrawerOpen}
                     onOpenChange={setIsVariantDrawerOpen}
                 >
-                    <DrawerContent className={isMobile ? "bg-ivory" : "bg-ivory rounded-none"}>
+                    <DrawerContent className={isMobile ? "bg-ivory" : "bg-ivory !rounded-none"}>
                         <div className="mx-auto w-full max-w-6xl">
                             <DrawerHeader>
                                 <DrawerTitle>

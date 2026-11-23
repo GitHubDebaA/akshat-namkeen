@@ -1,5 +1,6 @@
 import { mapProductDetailsData } from "@/lib/mappers/product";
 import { getProductById } from "@/lib/data/product";
+import { getProductReviewData } from "@/lib/data/review";
 
 import { notFound } from "next/navigation";
 import ProductDetails from "@/components/products/details/index";
@@ -24,8 +25,11 @@ export default async function ProductViewPage({ params, searchParams }: ProductP
         notFound();
     }
 
+    const reviews = await getProductReviewData(id);
     const productDetails = mapProductDetailsData(product, {
         variantId,
+        rating: reviews.rating,
+        reviews,
     });
 
     return <ProductDetails data={productDetails} />;

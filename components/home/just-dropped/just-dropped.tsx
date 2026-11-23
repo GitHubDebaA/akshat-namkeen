@@ -13,8 +13,6 @@ export default async function JustDropped() {
         return null;
     }
 
-    console.log('wishlistedVariantIds ', wishlistedVariantIds);
-
     const items = collection.items.slice(0, 5).map((item) =>
         mapProductCardData(item.product, {
             variantId: item.variant.id,

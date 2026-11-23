@@ -8,7 +8,7 @@ import WhyChooseUsSection from "./why-choose-us/why-choose-us";
 
 export default async function Home() {
     return (
-        <section className="space-y-6 md:space-y-12">
+        <section className="space-y-6 md:space-y-12 mb-12 md:mb-24">
             <section className="overflow-hidden">
                 <HeroSection />
             </section>

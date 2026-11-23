@@ -87,17 +87,13 @@ export default function ProductInformation({
     ];
 
     return (
-        <div className="border-t border-brand-200 divide-y divide-brand-200">
+        <div className="border-t border-obsidian/30 divide-y divide-obsidian/30">
             {tabs.map((tab) => (
                 <div key={tab.id}>
                     <button
                         type="button"
                         onClick={() =>
-                            setOpenTab(
-                                openTab === tab.id
-                                    ? null
-                                    : tab.id
-                            )
+                            setOpenTab(openTab === tab.id ? null : tab.id)
                         }
                         className="flex items-center justify-between w-full py-4 text-left"
                     >
@@ -107,9 +103,7 @@ export default function ProductInformation({
 
                         <ChevronDown
                             className={`w-4 h-4 text-obsidian/50 transition-transform ${
-                                openTab === tab.id
-                                    ? "rotate-180"
-                                    : ""
+                                openTab === tab.id ? "rotate-180" : ""
                             }`}
                         />
                     </button>
